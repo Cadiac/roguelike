@@ -3,6 +3,14 @@ Input = require 'libraries/boipushy/Input'
 Timer = require 'libraries/enhanced_timer/EnhancedTimer'
 fn = require 'libraries/moses/moses'
 
+require 'GameObject'
+require 'utils'
+require 'objects/Area'
+
+-- GameObjects
+require 'objects/Circle'
+require 'objects/Rectangle'
+
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
   RectangleRoom = require 'rooms/RectangleRoom',
@@ -17,6 +25,7 @@ function love.load()
   rooms = {}
 
   current_room = nil
+  gotoRoom('CircleRoom')
 
   input:bind('f1', function() gotoRoom('CircleRoom') end)
   input:bind('f2', function() gotoRoom('RectangleRoom') end)

@@ -1,4 +1,4 @@
-local HyperCircle = Circle:extend()
+HyperCircle = Circle:extend()
 
 function HyperCircle:new(x, y, radius, line_width, padding)
   HyperCircle.super.new(self, x, y, radius)
@@ -18,5 +18,3 @@ function HyperCircle:draw()
   love.graphics.circle('line', self.x, self.y, self.outer_radius)
   love.graphics.setLineWidth(1)
 end
-
-return HyperCircle

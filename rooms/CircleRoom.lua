@@ -1,25 +1,28 @@
-local Circle = require 'objects/Circle'
-
 local CircleRoom = Object:extend()
 
 function CircleRoom:new()
   print('Initialized CircleRoom')
-  self.circle = Circle(200, 150, 96)
+  self.area = Area()
+  self.timer = Timer()
+  self.timer:every(0.25, function()
+    self.area:addGameObject('Circle', random(0, 480), random(0, 270), 0)
+  end)
 end
 
 function CircleRoom:update(dt)
   if input:pressed('expand') then
-    timer:tween('transform', 1, self.circle, {radius = 96}, 'in-out-linear')
+    self.timer:tween('transform', 1, self.circle, {radius = 96}, 'in-out-linear')
   end
   if input:pressed('shrink') then
-    timer:tween('transform', 1, self.circle, {radius = 24}, 'in-out-linear')
+    self.timer:tween('transform', 1, self.circle, {radius = 24}, 'in-out-linear')
   end
 
-  self.circle:update(dt)
+  self.area:update(dt)
+  self.timer:update(dt)
 end
 
 function CircleRoom:draw()
-  self.circle:draw()
+  self.area:draw()
 end
 
 return CircleRoom
