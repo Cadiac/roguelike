@@ -1,16 +1,13 @@
 Circle = GameObject:extend()
 
-function Circle:new(area, x, y, radius)
+function Circle:new(area, x, y)
   Circle.super.new(self, area, x, y, opts)
 
-  self.x, self.y, self.radius = x, y, radius
+  self.x, self.y = x, y
+  self.radius = random(10, 50)
   self.creation_time = love.timer.getTime()
 
-  self.timer:tween(2, self, {radius = 50}, 'in-out-cubic', function()
-    self.timer:tween(2, self, {radius = 0}, 'in-out-cubic', function()
-      self.dead = true
-    end)
-  end)
+  self.timer:tween(2, self, {radius = 50}, 'in-out-cubic')
 end
 
 function Circle:update(dt)

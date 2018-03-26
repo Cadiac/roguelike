@@ -8,7 +8,7 @@ function RectangleRoom:new()
     self.area:addGameObject('Rectangle', random(0, gw), random(0, gh))
   end
 
-  input:bind('g', 'removeRectangle')
+  input:bind('d', 'removeRectangle')
 end
 
 function RectangleRoom:update()

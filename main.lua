@@ -1,11 +1,13 @@
 Object = require 'libraries/classic/classic'
 Input = require 'libraries/boipushy/Input'
 Timer = require 'libraries/enhanced_timer/EnhancedTimer'
+Camera = require 'libraries/hump/camera'
 fn = require 'libraries/moses/moses'
 
 require 'GameObject'
 require 'utils'
 require 'objects/Area'
+require 'objects/Shake'
 
 -- GameObjects
 require 'objects/Circle'
@@ -20,6 +22,13 @@ local available_rooms = {
 function love.load()
   input = Input()
   timer = Timer()
+  camera = Camera()
+
+  -- Pixelated look
+  love.graphics.setDefaultFilter('nearest')
+  love.graphics.setLineStyle('rough')
+
+  resize(2)
 
   -- Rooms
   rooms = {}
@@ -30,6 +39,7 @@ function love.load()
   input:bind('f1', function() gotoRoom('CircleRoom') end)
   input:bind('f2', function() gotoRoom('RectangleRoom') end)
   input:bind('f3', function() gotoRoom('PolygonRoom') end)
+  input:bind('f4', function() camera:shake(4, 30, 0.5) end)
 
   input:bind('mouse1', 'shoot')
   input:bind('d', 'damage')
@@ -46,6 +56,7 @@ function love.update(dt)
   if current_room then current_room:update(dt) end
 
   timer:update(dt)
+  camera:update(dt)
 
   if input:pressed('damage') then
     timer:tween('fg', love.math.random(), hp_bar_fg, {w = hp_bar_fg.w - 25}, 'in-out-cubic')
@@ -81,4 +92,9 @@ function gotoRoom(room_type, ...)
   else
     print('Unknown room!', room_type)
   end
+end
+
+function resize(s)
+  love.window.setMode(s*gw, s*gh)
+  sx, sy = s, s
 end
