@@ -5,6 +5,10 @@ function Rectangle:new(area, x, y, opts)
   self.w, self.h = random(10, 50), random(10, 50)
 end
 
+function Rectangle:destroy()
+  Rectangle.super.destroy(self)
+end
+
 function Rectangle:update(dt)
   Rectangle.super.update(self, dt)
 end

@@ -3,6 +3,7 @@ Input = require 'libraries/boipushy/Input'
 Timer = require 'libraries/enhanced_timer/EnhancedTimer'
 Camera = require 'libraries/hump/camera'
 fn = require 'libraries/moses/moses'
+Physics = require 'libraries/windfield/windfield'
 
 require 'GameObject'
 require 'utils'
@@ -12,6 +13,7 @@ require 'objects/Shake'
 -- GameObjects
 require 'objects/Circle'
 require 'objects/Rectangle'
+require 'objects/Player'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
@@ -19,16 +21,21 @@ local available_rooms = {
   PolygonRoom = require 'rooms/PolygonRoom',
 }
 
+drawDebug = true
+
 function love.load()
   input = Input()
   timer = Timer()
   camera = Camera()
 
+  love.mouse.setVisible(false)
+  love.mouse.setGrabbed(true)
+
   -- Pixelated look
   love.graphics.setDefaultFilter('nearest')
   love.graphics.setLineStyle('rough')
 
-  resize(2)
+  -- resize(2)
 
   -- Rooms
   rooms = {}
@@ -41,10 +48,33 @@ function love.load()
   input:bind('f3', function() gotoRoom('PolygonRoom') end)
   input:bind('f4', function() camera:shake(4, 30, 0.5) end)
 
+  input:bind('f5', function()
+    print("Before collection: " .. collectgarbage("count")/1024)
+    collectgarbage()
+    print("After collection: " .. collectgarbage("count")/1024)
+    print("Object count: ")
+    local counts = type_count()
+    for k, v in pairs(counts) do print(k, v) end
+    print("-------------------------------------")
+  end)
+
+  input:bind('g', function()
+    if current_room and current_room.room then
+      current_room.room:destroy()
+      rooms[current_room.type] = nil
+      current_room = nil
+    end
+  end)
+
   input:bind('mouse1', 'shoot')
-  input:bind('d', 'damage')
+  input:bind('h', 'damage')
   input:bind('e', 'expand')
-  input:bind('s', 'shrink')
+  input:bind('n', 'shrink')
+
+  input:bind('a', 'left')
+  input:bind('d', 'right')
+  input:bind('w', 'up')
+  input:bind('s', 'down')
 
   -- image = love.graphics.newImage('resources/sprites/ball.png')
 
@@ -53,7 +83,7 @@ function love.load()
 end
 
 function love.update(dt)
-  if current_room then current_room:update(dt) end
+  if current_room and current_room.room then current_room.room:update(dt) end
 
   timer:update(dt)
   camera:update(dt)
@@ -65,6 +95,11 @@ function love.update(dt)
     end)
   end
 
+  if input:pressed('left') then print('left') end
+  if input:pressed('right') then print('right') end
+  if input:pressed('up') then print('up') end
+  if input:pressed('down') then print('down') end
+
   if input:pressed('shoot') then print('pressed') end
   if input:released('shoot') then print('released') end
   if input:down('shoot') then print('down') end
@@ -72,9 +107,17 @@ function love.update(dt)
 end
 
 function love.draw()
-  love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+  -- Debug statistics
+  local statistics = ("fps: %d, mem: %dKB"):format(love.timer.getFPS(), collectgarbage("count"))
+  love.graphics.print(statistics, 10, 10)
+
+  -- Mouse
+  local mouse_x, mouse_y = love.mouse.getPosition()
+  love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
+  love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
+
   -- love.graphics.draw(image, love.math.random(0, 800), love.math.random(0, 600))
-  if current_room then current_room:draw() end
+  if current_room and current_room.room then current_room.room:draw() end
 
   -- love.graphics.setColor(222, 64, 64)
   -- love.graphics.rectangle('fill', hp_bar_bg.x, hp_bar_bg.y - hp_bar_bg.h/2, hp_bar_bg.w, hp_bar_bg.h)
@@ -84,11 +127,23 @@ function love.draw()
 end
 
 function gotoRoom(room_type, ...)
+  if current_room and current_room.room and current_room.room.destroy then
+    current_room.room:destroy()
+    rooms[current_room.type] = nil
+    current_room = nil
+  end
+
   if rooms[room_type] then
-    current_room = rooms[room_type]
+    current_room = {
+      room = rooms[room_type],
+      type = room_type
+    }
   elseif available_rooms[room_type] then
     rooms[room_type] = available_rooms[room_type](...)
-    current_room = rooms[room_type]
+    current_room = {
+      room = rooms[room_type],
+      type = room_type
+    }
   else
     print('Unknown room!', room_type)
   end

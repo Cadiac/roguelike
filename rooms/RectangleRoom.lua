@@ -1,7 +1,6 @@
 local RectangleRoom = Object:extend()
 
 function RectangleRoom:new()
-  print('Initialized RectangleRoom')
   self.area = Area()
   self.timer = Timer()
   for i = 1, 10 do
@@ -9,6 +8,11 @@ function RectangleRoom:new()
   end
 
   input:bind('d', 'removeRectangle')
+end
+
+function RectangleRoom:destroy()
+  self.area:destroy()
+  self.area = nil
 end
 
 function RectangleRoom:update()

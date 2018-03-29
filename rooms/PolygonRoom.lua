@@ -1,7 +1,12 @@
 local PolygonRoom = Object:extend()
 
 function PolygonRoom:new()
-  print('Initialized PolygonRoom')
+  self.area = Area()
+end
+
+function PolygonRoom:destroy()
+  self.area:destroy()
+  self.area = nil
 end
 
 function PolygonRoom:update()

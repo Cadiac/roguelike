@@ -7,7 +7,19 @@ function Circle:new(area, x, y)
   self.radius = random(10, 50)
   self.creation_time = love.timer.getTime()
 
-  self.timer:tween(2, self, {radius = 50}, 'in-out-cubic')
+  local function resize_loop()
+    self.timer:tween(2, self, {radius = 50}, 'in-out-cubic', function()
+      self.timer:tween(2, self, {radius = 0}, 'in-out-cubic', function()
+        resize_loop()
+      end)
+    end)
+  end
+
+  resize_loop()
+end
+
+function Circle:destroy()
+  Circle.super.destroy(self)
 end
 
 function Circle:update(dt)

@@ -1,10 +1,27 @@
 local CircleRoom = Object:extend()
 
 function CircleRoom:new()
-  print('Initialized CircleRoom')
   self.area = Area()
+  self.area:addPhysicsWorld()
+
   self.timer = Timer()
   self.main_canvas = love.graphics.newCanvas(gw, gh)
+
+  ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
+  wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
+  wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
+  ground:setType('static')
+  wall_left:setType('static')
+  wall_right:setType('static')
+
+  self.player = self.area:addGameObject('Player', gw/2, gh/2)
+
+  input:bind('o', function()
+    if (self.player) then
+      self.player.dead = true
+      self.player = nil
+    end
+  end)
 
   local function process()
     timer:cancel('process_every')
@@ -14,18 +31,14 @@ function CircleRoom:new()
         self.area:addGameObject('Circle', random(0, gw), random(0, gh))
       end)
     end
-
-    self.timer:after(2.5, function()
-      self.timer:every('process_every', random(0.5, 1), function()
-        table.remove(self.area.game_objects, love.math.random(1, #self.area.game_objects))
-        if #self.area.game_objects == 0 then
-          process()
-        end
-      end, 10)
-    end)
   end
 
   process()
+end
+
+function CircleRoom:destroy()
+  self.area:destroy()
+  self.area = nil
 end
 
 function CircleRoom:update(dt)
