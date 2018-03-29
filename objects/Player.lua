@@ -60,7 +60,7 @@ function Player:draw()
   -- a specific angle in relation to position A, the pattern is something like:
   -- bx = ax + distance*math.cos(angle)
   -- by = ay + distance*math.sin(angle).
-  self.r = math.atan2((love.mouse.getY() - self.y), (love.mouse.getX() - self.x))
+  self.r = math.atan2((love.mouse.getY() - self.y * gscale), (love.mouse.getX() - self.x * gscale))
   love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
 
   love.graphics.setColor(255, 255, 255, 255)

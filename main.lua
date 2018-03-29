@@ -35,7 +35,7 @@ function love.load()
   love.graphics.setDefaultFilter('nearest')
   love.graphics.setLineStyle('rough')
 
-  -- resize(2)
+  resize(gscale)
 
   -- Rooms
   rooms = {}
@@ -107,14 +107,14 @@ function love.update(dt)
 end
 
 function love.draw()
-  -- Debug statistics
-  local statistics = ("fps: %d, mem: %dKB"):format(love.timer.getFPS(), collectgarbage("count"))
-  love.graphics.print(statistics, 10, 10)
-
   -- Mouse
   local mouse_x, mouse_y = love.mouse.getPosition()
   love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
   love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
+
+  -- Debug
+  local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
+  love.graphics.print(statistics, 10, 10)
 
   -- love.graphics.draw(image, love.math.random(0, 800), love.math.random(0, 600))
   if current_room and current_room.room then current_room.room:draw() end
