@@ -1,3 +1,4 @@
+-- Generic utility helpers
 function UUID()
   local fn = function(x)
     local r = love.math.random(16) - 1
@@ -16,10 +17,50 @@ function random(min, max)
   end
 end
 
+-- Coordinates math helpers
 function distance(x1, y1, x2, y2)
   return math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2))
 end
 
+function coordsInDirection(x, y, distance, angle)
+  return x + distance*math.cos(angle), y + distance*math.sin(angle)
+end
+
+function angleTowardsCoords(x1, y1, x2, y2)
+  return math.atan2(y2 - y1, x2 - x1)
+end
+
+-- Drawing helpers
+-- Rotate all graphics by r until love.graphics.pop() is called
+function pushRotate(x, y, r)
+  love.graphics.push()
+  love.graphics.translate(x, y)
+  love.graphics.rotate(r or 0)
+  love.graphics.translate(-x, -y)
+end
+
+-- Scale all graphics by sx and sy and rotate by r until love.graphics.pop() is called
+function pushRotateScale(x, y, r, sx, sy)
+  love.graphics.push()
+  love.graphics.translate(x, y)
+  love.graphics.rotate(r or 0)
+  love.graphics.scale(sx or 1, sy or sx or 1)
+  love.graphics.translate(-x, -y)
+end
+
+-- Slow time
+function slow(amount, duration)
+  slow_amount = amount
+  timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
+end
+
+-- Flash background color
+function flash(duration)
+  flash_frames = true
+  timer:after('flash', duration, function() flash_frames = false end)
+end
+
+-- Debug prints
 function printAll(...)
   local args = {...}
   for _, arg in ipairs(args) do

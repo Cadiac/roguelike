@@ -9,13 +9,15 @@ function Player:new(area, x, y, opts)
   self.collider:setObject(self)
 
   self.r = -math.pi/2
-  self.rv = 1.66*math.pi
   self.vx = 0
   self.vy = 0
-  self.max_v = 100
+
+  self.attack_speed = 10
 
   self.run_a = 100
   self.stop_a = 1000
+
+  self.timer:every(5, function() self:tick() end)
 end
 
 function Player:destroy()
@@ -27,11 +29,6 @@ function Player:update(dt)
 
   self.vx = 0
   self.vy = 0
-
-  -- if input:down('left') then self.vx = self.vx - dt * (self.vx > 0 and self.stop_a or self.run_a) end
-  -- if input:down('right') then self.vx = self.vx + dt * (self.vx < 0 and self.stop_a or self.run_a) end
-  -- if input:down('up') then self.vy = self.vy - dt * (self.vy > 0 and self.stop_a or self.run_a) end
-  -- if input:down('down') then self.vy = self.vy + dt * (self.vy < 0 and self.stop_a or self.run_a) end
 
   local left = input:down('left')
   local right = input:down('right')
@@ -51,17 +48,43 @@ function Player:update(dt)
   end
 
   self.collider:setLinearVelocity(self.vx, self.vy)
+
+  if input:down('shoot', 1.0/self.attack_speed) then self:shoot() end
+
+  if self.collider:enter('Solid') then self:die() end
 end
 
 function Player:draw()
   love.graphics.setColor(224, 0, 0, 255)
   love.graphics.circle('line', self.x, self.y, self.w)
-  -- position B that is distance units away from position A such that position B is positioned at
-  -- a specific angle in relation to position A, the pattern is something like:
-  -- bx = ax + distance*math.cos(angle)
-  -- by = ay + distance*math.sin(angle).
-  self.r = math.atan2((love.mouse.getY() - self.y * gscale), (love.mouse.getX() - self.x * gscale))
-  love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
 
+  -- Mouse coordinates are scaled
+  self.r = angleTowardsCoords(self.x, self.y, love.mouse.getX() / sx, love.mouse.getY() / sy)
+
+  love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
   love.graphics.setColor(255, 255, 255, 255)
+end
+
+function Player:shoot()
+  local distance = 1.5*self.w
+
+  local particle_x, particle_y = coordsInDirection(self.x, self.y, distance, self.r)
+
+  self.area:addGameObject('ShootEffect', particle_x, particle_y, {player = self, distance = distance})
+  self.area:addGameObject('Projectile', particle_x, particle_y, {r = self.r})
+end
+
+function Player:tick()
+  self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+end
+
+function Player:die()
+  self.dead = true
+  flash(0.05)
+  slow(0.15, 1)
+  camera:shake(3, 30, 0.4)
+
+  for i = 1, love.math.random(8, 12) do
+    self.area:addGameObject('ExplodeParticle', self.x, self.y)
+  end
 end

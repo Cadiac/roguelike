@@ -7,11 +7,18 @@ function CircleRoom:new()
   self.timer = Timer()
   self.main_canvas = love.graphics.newCanvas(gw, gh)
 
+  self.area.world:addCollisionClass('Solid')
+
   ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
-  wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
-  wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
+  ground:setCollisionClass('Solid')
   ground:setType('static')
+
+  wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
+  wall_left:setCollisionClass('Solid')
   wall_left:setType('static')
+
+  wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
+  wall_right:setCollisionClass('Solid')
   wall_right:setType('static')
 
   self.player = self.area:addGameObject('Player', gw/2, gh/2)

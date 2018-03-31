@@ -1,6 +1,8 @@
 gw = 480
 gh = 270
 gscale = 2
+slow_amount = 1
+flash_frames = false
 
 function love.conf(t)
   t.identity = nil                    -- The name of the save directory (string)
