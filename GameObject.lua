@@ -7,8 +7,10 @@ function GameObject:new(area, x, y, opts)
   self.area = area
   self.x, self.y = x, y
   self.id = UUID()
+  self.creation_time = love.timer.getTime()
   self.dead = false
   self.timer = Timer()
+  self.depth = 50
 end
 
 function GameObject:destroy()

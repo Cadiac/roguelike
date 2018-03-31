@@ -2,6 +2,7 @@ ProjectileDeathEffect = GameObject:extend()
 
 function ProjectileDeathEffect:new(area, x, y, opts)
   ProjectileDeathEffect.super.new(self, area, x, y, opts)
+  self.depth = 50
 
   self.s = opts.s or 2.5
 

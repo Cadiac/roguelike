@@ -2,6 +2,7 @@ Player = GameObject:extend()
 
 function Player:new(area, x, y, opts)
   Player.super.new(self, area, x, y, opts)
+  self.depth = 100
 
   self.x, self.y = x, y
   self.w, self.h = 12, 12
@@ -13,9 +14,6 @@ function Player:new(area, x, y, opts)
   self.vy = 0
 
   self.attack_speed = 10
-
-  self.run_a = 100
-  self.stop_a = 1000
 
   self.timer:every(5, function() self:tick() end)
 end

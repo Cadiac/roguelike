@@ -2,6 +2,8 @@ HyperCircle = Circle:extend()
 
 function HyperCircle:new(x, y, radius, line_width, padding)
   HyperCircle.super.new(self, x, y, radius)
+  self.depth = 10
+
   self.line_width = line_width
   self.padding = padding
   self.outer_radius = self.padding + self.radius

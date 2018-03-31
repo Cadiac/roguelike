@@ -26,7 +26,7 @@ local available_rooms = {
   PolygonRoom = require 'rooms/PolygonRoom',
 }
 
-drawDebug = true
+drawDebug = false
 
 function love.load()
   input = Input()

@@ -2,6 +2,8 @@ Rectangle = GameObject:extend()
 
 function Rectangle:new(area, x, y, opts)
   Rectangle.super.new(self, area, x, y, opts)
+  self.depth = 50
+
   self.w, self.h = random(10, 50), random(10, 50)
 end
 

@@ -2,6 +2,7 @@ Circle = GameObject:extend()
 
 function Circle:new(area, x, y)
   Circle.super.new(self, area, x, y, opts)
+  self.depth = 10
 
   self.x, self.y = x, y
   self.radius = random(10, 50)
