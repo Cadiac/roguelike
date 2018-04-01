@@ -4,6 +4,8 @@ function CircleRoom:new()
   self.area = Area()
   self.area:addPhysicsWorld()
 
+  self.font = fonts.VT323_16
+
   self.timer = Timer()
   self.main_canvas = love.graphics.newCanvas(gw, gh)
 
@@ -68,6 +70,18 @@ function CircleRoom:draw()
   love.graphics.clear()
     camera:attach(0, 0, gw, gh)
     self.area:draw()
+    ResourceBar(50, gh - 30, {
+      resource = self.player.mana,
+      resource_max = self.player.max_mana,
+      color = {0, 0, 255},
+      width = 100
+    })
+    ResourceBar(gw - 150, gh - 30, {
+      resource = self.player.hp,
+      resource_max = self.player.max_hp,
+      color = {255, 0, 0},
+      width = 100
+    })
   	camera:detach()
   love.graphics.setCanvas()
 

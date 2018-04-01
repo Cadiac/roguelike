@@ -4,6 +4,7 @@ Timer = require 'libraries/enhanced_timer/EnhancedTimer'
 Camera = require 'libraries/hump/camera'
 fn = require 'libraries/moses/moses'
 Physics = require 'libraries/windfield/windfield'
+require 'libraries/utf8'
 
 require 'GameObject'
 require 'utils'
@@ -11,6 +12,7 @@ require 'objects/Area'
 require 'objects/Shake'
 
 -- GameObjects
+
 require 'objects/Circle'
 require 'objects/Rectangle'
 require 'objects/Player'
@@ -19,12 +21,16 @@ require 'objects/Projectile'
 require 'objects/ProjectileDeathEffect'
 require 'objects/ExplodeParticle'
 require 'objects/TickEffect'
+require 'objects/ResourceBar'
+require 'objects/InfoText'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
   RectangleRoom = require 'rooms/RectangleRoom',
   PolygonRoom = require 'rooms/PolygonRoom',
 }
+
+fonts = {}
 
 drawDebug = false
 
@@ -39,6 +45,17 @@ function love.load()
   -- Pixelated look
   love.graphics.setDefaultFilter('nearest')
   love.graphics.setLineStyle('rough')
+
+  -- Fonts
+  local m5x7_8 = love.graphics.newFont('resources/fonts/m5x7.ttf', 8)
+  m5x7_8:setFilter('nearest', 'nearest')
+  fonts['m5x7_8'] = m5x7_8
+
+  local m5x7_16 = love.graphics.newFont('resources/fonts/m5x7.ttf', 16)
+  m5x7_16:setFilter('nearest', 'nearest')
+  fonts['m5x7_16'] = m5x7_16
+
+  love.graphics.setFont(m5x7_16)
 
   resize(gscale)
 

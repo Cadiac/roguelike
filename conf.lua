@@ -1,6 +1,7 @@
 gw = 480
 gh = 270
 gscale = 2
+sx, sy = 1, 1
 slow_amount = 1
 flash_frames = false
 

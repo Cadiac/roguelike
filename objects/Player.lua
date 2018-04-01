@@ -15,6 +15,13 @@ function Player:new(area, x, y, opts)
 
   self.attack_speed = 10
 
+  self.mana = 50
+  self.max_mana = 100
+  self.mana_regen = 20
+
+  self.hp = 100
+  self.max_hp = 100
+
   self.timer:every(5, function() self:tick() end)
 end
 
@@ -24,6 +31,8 @@ end
 
 function Player:update(dt)
   Player.super.update(self, dt)
+
+  self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
 
   self.vx = 0
   self.vy = 0
@@ -49,7 +58,7 @@ function Player:update(dt)
 
   if input:down('shoot', 1.0/self.attack_speed) then self:shoot() end
 
-  if self.collider:enter('Solid') then self:die() end
+  if self.collider:enter('Solid') then self:takeDamage(50, 'environment') end
 end
 
 function Player:draw()
@@ -64,19 +73,31 @@ function Player:draw()
 end
 
 function Player:shoot()
-  local distance = 1.5*self.w
+  if (self.mana > 10) then
+    self.mana = self.mana - 10
+    local distance = 1.5*self.w
 
-  local particle_x, particle_y = coordsInDirection(self.x, self.y, distance, self.r)
+    local particle_x, particle_y = coordsInDirection(self.x, self.y, distance, self.r)
 
-  self.area:addGameObject('ShootEffect', particle_x, particle_y, {player = self, distance = distance})
-  self.area:addGameObject('Projectile', particle_x, particle_y, {r = self.r})
+    self.area:addGameObject('ShootEffect', particle_x, particle_y, {player = self, distance = distance})
+    self.area:addGameObject('Projectile', particle_x, particle_y, {r = self.r})
+    self.area:addGameObject('InfoText', self.x, self.y, {text = 'PEW', color = {128, 255, 0}})
+  end
 end
 
 function Player:tick()
   self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
 end
 
+function Player:takeDamage(damage, type)
+  self.hp = math.max(self.hp - damage, 0)
+
+  if self.hp == 0 then self:die() end
+end
+
 function Player:die()
+  self.mana = 0
+  self.hp = 0
   self.dead = true
   flash(0.05)
   slow(0.15, 1)
