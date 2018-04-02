@@ -2,7 +2,7 @@ function ResourceBar(x, y, opts)
   local resource = opts.resource or 100
   local max_resource = opts.max_resource or 100
 
-  local color = opts.color or {0, 0, 255}
+  local color = opts.color or hp_color
   local width = opts.width or 200
   local height = opts.height or 12
   local font = fonts.m5x7_16

@@ -10,6 +10,8 @@ function CircleRoom:new()
   self.main_canvas = love.graphics.newCanvas(gw, gh)
 
   self.area.world:addCollisionClass('Solid')
+  self.area.world:addCollisionClass('Player')
+  self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
   ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
   ground:setCollisionClass('Solid')
@@ -70,22 +72,50 @@ function CircleRoom:draw()
   love.graphics.clear()
     camera:attach(0, 0, gw, gh)
     self.area:draw()
-    ResourceBar(50, gh - 30, {
+    ResourceBar(50, gh - 35, {
       resource = self.player.mana,
       resource_max = self.player.max_mana,
-      color = {0, 0, 255},
+      color = mana_color,
       width = 100
     })
-    ResourceBar(gw - 150, gh - 30, {
+    ResourceBar(gw - 150, gh - 35, {
       resource = self.player.hp,
       resource_max = self.player.max_hp,
-      color = {255, 0, 0},
+      color = hp_color,
       width = 100
+    })
+    ActionBarIcon(gw/2 - 67, gh - 35, {
+      cooldown = self.player.shoot_cooldown,
+      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      current_mana = self.player.mana,
+      mana_cost = 25,
+      hotkey = '1'
+    })
+    ActionBarIcon(gw/2 - 32, gh - 35, {
+      cooldown = self.player.shoot_cooldown,
+      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      current_mana = self.player.mana,
+      mana_cost = 75,
+      hotkey = '2'
+    })
+    ActionBarIcon(gw/2 + 3, gh - 35, {
+      cooldown = self.player.shoot_cooldown,
+      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      current_mana = self.player.mana,
+      mana_cost = 100,
+      hotkey = '3'
+    })
+    ActionBarIcon(gw/2 + 38, gh - 35, {
+      cooldown = self.player.shoot_cooldown,
+      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      current_mana = self.player.mana,
+      mana_cost = 50,
+      hotkey = '4'
     })
   	camera:detach()
   love.graphics.setCanvas()
 
-  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.setColor(default_color)
   love.graphics.setBlendMode('alpha', 'premultiplied')
   love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
   love.graphics.setBlendMode('alpha')

@@ -6,6 +6,7 @@ fn = require 'libraries/moses/moses'
 Physics = require 'libraries/windfield/windfield'
 require 'libraries/utf8'
 
+require 'globals'
 require 'GameObject'
 require 'utils'
 require 'objects/Area'
@@ -21,8 +22,11 @@ require 'objects/Projectile'
 require 'objects/ProjectileDeathEffect'
 require 'objects/ExplodeParticle'
 require 'objects/TickEffect'
-require 'objects/ResourceBar'
 require 'objects/InfoText'
+
+-- Stateless components
+require 'objects/ResourceBar'
+require 'objects/ActionBarIcon'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
@@ -109,12 +113,8 @@ function love.update(dt)
 end
 
 function love.draw()
-  -- Mouse
-  local mouse_x, mouse_y = love.mouse.getPosition()
-  love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
-  love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
-
   -- Debug
+  local mouse_x, mouse_y = love.mouse.getPosition()
   local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
   love.graphics.print(statistics, 10, 10)
 
@@ -127,6 +127,10 @@ function love.draw()
 
   -- Render room
   if current_room and current_room.room then current_room.room:draw() end
+
+  -- Mouse
+  love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
+  love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
 end
 
 function gotoRoom(room_type, ...)

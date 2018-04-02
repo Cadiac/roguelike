@@ -6,8 +6,10 @@ function Player:new(area, x, y, opts)
 
   self.x, self.y = x, y
   self.w, self.h = 12, 12
+
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
+  self.collider:setCollisionClass('Player')
 
   self.r = -math.pi/2
   self.vx = 0
@@ -17,10 +19,13 @@ function Player:new(area, x, y, opts)
 
   self.mana = 50
   self.max_mana = 100
-  self.mana_regen = 20
+  self.mana_regen = 5
 
   self.hp = 100
   self.max_hp = 100
+
+  self.shoot_cooldown = 1
+  self.shoot_cooldown_remaining = 0
 
   self.timer:every(5, function() self:tick() end)
 end
@@ -33,6 +38,8 @@ function Player:update(dt)
   Player.super.update(self, dt)
 
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
+
+  if self.shoot_cooldown_remaining > 0 then self.shoot_cooldown_remaining = math.max(self.shoot_cooldown_remaining - dt, 0) end
 
   self.vx = 0
   self.vy = 0
@@ -73,10 +80,11 @@ function Player:draw()
 end
 
 function Player:shoot()
-  if (self.mana > 10) then
+  if (self.mana > 10 and self.shoot_cooldown_remaining == 0) then
     self.mana = self.mana - 10
-    local distance = 1.5*self.w
+    self.shoot_cooldown_remaining = self.shoot_cooldown
 
+    local distance = 1.5*self.w
     local particle_x, particle_y = coordsInDirection(self.x, self.y, distance, self.r)
 
     self.area:addGameObject('ShootEffect', particle_x, particle_y, {player = self, distance = distance})
