@@ -45,6 +45,8 @@ function CircleRoom:new()
   end
 
   process()
+
+  self.poison_skill_icon = love.graphics.newImage('resources/sprites/skill_poison_icon.png')
 end
 
 function CircleRoom:destroy()
@@ -89,6 +91,7 @@ function CircleRoom:draw()
       cooldown_remaining = self.player.shoot_cooldown_remaining,
       current_mana = self.player.mana,
       mana_cost = 25,
+      skill_icon = self.poison_skill_icon,
       hotkey = '1'
     })
     ActionBarIcon(gw/2 - 32, gh - 35, {
@@ -96,6 +99,7 @@ function CircleRoom:draw()
       cooldown_remaining = self.player.shoot_cooldown_remaining,
       current_mana = self.player.mana,
       mana_cost = 75,
+      skill_icon = self.poison_skill_icon,
       hotkey = '2'
     })
     ActionBarIcon(gw/2 + 3, gh - 35, {
@@ -103,6 +107,7 @@ function CircleRoom:draw()
       cooldown_remaining = self.player.shoot_cooldown_remaining,
       current_mana = self.player.mana,
       mana_cost = 100,
+      skill_icon = self.poison_skill_icon,
       hotkey = '3'
     })
     ActionBarIcon(gw/2 + 38, gh - 35, {
@@ -110,6 +115,7 @@ function CircleRoom:draw()
       cooldown_remaining = self.player.shoot_cooldown_remaining,
       current_mana = self.player.mana,
       mana_cost = 50,
+      skill_icon = self.poison_skill_icon,
       hotkey = '4'
     })
   	camera:detach()

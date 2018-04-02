@@ -6,8 +6,8 @@ function ActionBarIcon(x, y, opts)
   local current_mana = opts.current_mana
   local hotkey = opts.hotkey
 
-  local width = opts.width or 30
-  local height = opts.height or 30
+  local width = opts.width or 32
+  local height = opts.height or 32
   local font = fonts.m5x7_16
 
   local progress = (cooldown - cooldown_remaining) / cooldown
@@ -17,11 +17,12 @@ function ActionBarIcon(x, y, opts)
   end
 
   -- Background
-  love.graphics.setColor(hp_color)
-  love.graphics.rectangle('fill', x, y, width, height)
+  -- love.graphics.setColor(hp_color)
+  -- love.graphics.rectangle('fill', x, y, width, height)
+  love.graphics.draw(skill_icon, x, y)
   -- Low mana warning overlay
   if current_mana < mana_cost then
-    love.graphics.setColor(0, 0, 255, 128)
+    love.graphics.setColor(0, 0, 0, 224)
     love.graphics.rectangle('fill', x, y, width, height)
   end
   -- Cooldown indicator
@@ -39,6 +40,6 @@ function ActionBarIcon(x, y, opts)
   love.graphics.printf(hotkey, x, y, width, 'left', 0, 1, 1, -2, 2)
   -- Manacost
   love.graphics.setFont(font)
-  love.graphics.setColor(mana_color)
+  love.graphics.setColor(255, 255, 255)
   love.graphics.printf(mana_cost, x, y + height - 10, width, 'right', 0, 1, 1, 1, 4)
 end
