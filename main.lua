@@ -28,7 +28,9 @@ require 'objects/ResourceBar'
 require 'objects/ActionBarIcon'
 
 -- Skills
-require 'objects/skills/Skills'
+require 'objects/skills/Skill'
+require 'objects/skills/Fireball'
+require 'objects/skills/PoisonDart'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',

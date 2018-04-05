@@ -7,6 +7,10 @@ function Projectile:new(area, x, y, opts)
   self.s = opts.s or 2.5
   self.v = opts.v or 200
 
+  self.start_x = x
+  self.start_y = y
+  self.max_range = opts.max_range
+
   self.color = opts.color or {255, 255, 255}
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
@@ -27,6 +31,8 @@ function Projectile:update(dt)
   if self.x > gw then self:die() end
   if self.y > gh then self:die() end
 
+  if self.max_range and distance(self.x, self.y, self.start_x, self.start_y) > self.max_range then self:die() end
+
   if self.collider:enter('Solid') then self:die() end
 end
 
@@ -37,5 +43,5 @@ end
 
 function Projectile:die()
   self.dead = true
-  self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {w = 3*self.s})
+  self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {w = 3*self.s, color = self.color})
 end

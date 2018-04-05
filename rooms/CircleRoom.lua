@@ -26,10 +26,10 @@ function CircleRoom:new()
   wall_right:setType('static')
 
   self.player = self.area:addGameObject('Player', gw/2, gh/2, {
-    skill_slot_1 = Skill(skills['PoisonDart']),
-    skill_slot_2 = Skill(skills['Fireball']),
-    skill_slot_3 = Skill(skills['Icewall']),
-    skill_slot_4 = Skill(skills['ChainLightning'])
+    skill_slot_1 = Skill(),
+    skill_slot_2 = Skill(),
+    skill_slot_3 = Fireball(),
+    skill_slot_4 = PoisonDart()
   })
 
   input:bind('o', function()

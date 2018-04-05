@@ -5,10 +5,9 @@ function ProjectileDeathEffect:new(area, x, y, opts)
   self.depth = 50
 
   self.s = opts.s or 2.5
-
-  self.current_color = {255, 255, 255, 255}
+  self.current_color = opts.color or {255, 255, 255, 255}
   self.timer:after(0.1, function()
-    self.current_color = {255, 255, 255, 128}
+    self.current_color[4] = 128
     self.timer:after(0.15, function() self.dead = true end)
   end)
 end
