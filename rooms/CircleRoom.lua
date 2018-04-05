@@ -25,7 +25,12 @@ function CircleRoom:new()
   wall_right:setCollisionClass('Solid')
   wall_right:setType('static')
 
-  self.player = self.area:addGameObject('Player', gw/2, gh/2)
+  self.player = self.area:addGameObject('Player', gw/2, gh/2, {
+    skill_slot_1 = Skill(skills['PoisonDart']),
+    skill_slot_2 = Skill(skills['Fireball']),
+    skill_slot_3 = Skill(skills['Icewall']),
+    skill_slot_4 = Skill(skills['ChainLightning'])
+  })
 
   input:bind('o', function()
     if (self.player) then
@@ -45,8 +50,6 @@ function CircleRoom:new()
   end
 
   process()
-
-  self.poison_skill_icon = love.graphics.newImage('resources/sprites/skill_poison_icon.png')
 end
 
 function CircleRoom:destroy()
@@ -87,35 +90,35 @@ function CircleRoom:draw()
       width = 100
     })
     ActionBarIcon(gw/2 - 67, gh - 35, {
-      cooldown = self.player.shoot_cooldown,
-      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      cooldown = self.player.skill_slot_1.cooldown,
+      cooldown_remaining = self.player.skill_slot_1.cooldown_remaining,
       current_mana = self.player.mana,
-      mana_cost = 25,
-      skill_icon = self.poison_skill_icon,
+      mana_cost = self.player.skill_slot_1.mana_cost,
+      skill_icon = self.player.skill_slot_1.icon,
       hotkey = '1'
     })
     ActionBarIcon(gw/2 - 32, gh - 35, {
-      cooldown = self.player.shoot_cooldown,
-      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      cooldown = self.player.skill_slot_2.cooldown,
+      cooldown_remaining = self.player.skill_slot_2.cooldown_remaining,
       current_mana = self.player.mana,
-      mana_cost = 75,
-      skill_icon = self.poison_skill_icon,
+      mana_cost = self.player.skill_slot_2.mana_cost,
+      skill_icon = self.player.skill_slot_2.icon,
       hotkey = '2'
     })
     ActionBarIcon(gw/2 + 3, gh - 35, {
-      cooldown = self.player.shoot_cooldown,
-      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      cooldown = self.player.skill_slot_3.cooldown,
+      cooldown_remaining = self.player.skill_slot_3.cooldown_remaining,
       current_mana = self.player.mana,
-      mana_cost = 100,
-      skill_icon = self.poison_skill_icon,
+      mana_cost = self.player.skill_slot_3.mana_cost,
+      skill_icon = self.player.skill_slot_3.icon,
       hotkey = '3'
     })
     ActionBarIcon(gw/2 + 38, gh - 35, {
-      cooldown = self.player.shoot_cooldown,
-      cooldown_remaining = self.player.shoot_cooldown_remaining,
+      cooldown = self.player.skill_slot_4.cooldown,
+      cooldown_remaining = self.player.skill_slot_4.cooldown_remaining,
       current_mana = self.player.mana,
-      mana_cost = 50,
-      skill_icon = self.poison_skill_icon,
+      mana_cost = self.player.skill_slot_4.mana_cost,
+      skill_icon = self.player.skill_slot_4.icon,
       hotkey = '4'
     })
   	camera:detach()

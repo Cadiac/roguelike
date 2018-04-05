@@ -19,13 +19,15 @@ function Player:new(area, x, y, opts)
 
   self.mana = 50
   self.max_mana = 100
-  self.mana_regen = 5
+  self.mana_regen = 20
 
   self.hp = 100
   self.max_hp = 100
 
-  self.shoot_cooldown = 1
-  self.shoot_cooldown_remaining = 0
+  self.skill_slot_1 = opts.skill_slot_1
+  self.skill_slot_2 = opts.skill_slot_2
+  self.skill_slot_3 = opts.skill_slot_3
+  self.skill_slot_4 = opts.skill_slot_4
 
   self.timer:every(5, function() self:tick() end)
 end
@@ -39,7 +41,10 @@ function Player:update(dt)
 
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
 
-  if self.shoot_cooldown_remaining > 0 then self.shoot_cooldown_remaining = math.max(self.shoot_cooldown_remaining - dt, 0) end
+  self.skill_slot_1:update(dt)
+  self.skill_slot_2:update(dt)
+  self.skill_slot_3:update(dt)
+  self.skill_slot_4:update(dt)
 
   self.vx = 0
   self.vy = 0
@@ -63,7 +68,10 @@ function Player:update(dt)
 
   self.collider:setLinearVelocity(self.vx, self.vy)
 
-  if input:down('shoot', 1.0/self.attack_speed) then self:shoot() end
+  if input:down('skill_slot_1', 0.5) then self.skill_slot_1:cast(self.area, self, self.x, self.y, self.r) end
+  if input:down('skill_slot_2', 0.5) then self.skill_slot_2:cast(self.area, self, self.x, self.y, self.r) end
+  if input:down('skill_slot_3', 0.5) then self.skill_slot_3:cast(self.area, self, self.x, self.y, self.r) end
+  if input:down('skill_slot_4', 0.5) then self.skill_slot_4:cast(self.area, self, self.x, self.y, self.r) end
 
   if self.collider:enter('Solid') then self:takeDamage(50, 'environment') end
 end
@@ -101,6 +109,10 @@ function Player:takeDamage(damage, type)
   self.hp = math.max(self.hp - damage, 0)
 
   if self.hp == 0 then self:die() end
+end
+
+function Player:changeMana(change)
+  self.mana = math.max(self.mana + change, 0)
 end
 
 function Player:die()

@@ -13,7 +13,6 @@ require 'objects/Area'
 require 'objects/Shake'
 
 -- GameObjects
-
 require 'objects/Circle'
 require 'objects/Rectangle'
 require 'objects/Player'
@@ -27,6 +26,9 @@ require 'objects/InfoText'
 -- Stateless components
 require 'objects/ResourceBar'
 require 'objects/ActionBarIcon'
+
+-- Skills
+require 'objects/skills/Skills'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
@@ -93,6 +95,11 @@ function love.load()
   end)
 
   input:bind('mouse1', 'shoot')
+  input:bind('1', 'skill_slot_1')
+  input:bind('2', 'skill_slot_2')
+  input:bind('3', 'skill_slot_3')
+  input:bind('4', 'skill_slot_4')
+
   input:bind('h', 'damage')
   input:bind('e', 'expand')
   input:bind('n', 'shrink')

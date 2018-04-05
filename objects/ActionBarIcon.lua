@@ -17,8 +17,6 @@ function ActionBarIcon(x, y, opts)
   end
 
   -- Background
-  -- love.graphics.setColor(hp_color)
-  -- love.graphics.rectangle('fill', x, y, width, height)
   love.graphics.draw(skill_icon, x, y)
   -- Low mana warning overlay
   if current_mana < mana_cost then
@@ -28,7 +26,7 @@ function ActionBarIcon(x, y, opts)
   -- Cooldown indicator
   love.graphics.stencil(cooldownIndicatorMask, 'replace', 1)
   love.graphics.setStencilTest('equal', 1)
-  love.graphics.setColor(0, 0, 0, 128)
+  love.graphics.setColor(0, 0, 0, 192)
   love.graphics.arc('fill', x + width / 2, y + width / 2, width, -math.pi/2 + 2*math.pi*progress, 3/2*math.pi, 10)
   love.graphics.setStencilTest()
   -- Border

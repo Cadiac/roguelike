@@ -7,6 +7,8 @@ function Projectile:new(area, x, y, opts)
   self.s = opts.s or 2.5
   self.v = opts.v or 200
 
+  self.color = opts.color or {255, 255, 255}
+
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
   self.collider:setObject(self)
   self.collider:setLinearVelocity(self.v*math.cos(self.r), self.v*math.sin(self.r))
@@ -29,7 +31,7 @@ function Projectile:update(dt)
 end
 
 function Projectile:draw()
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(self.color)
   love.graphics.circle('line', self.x, self.y, self.s)
 end
 
