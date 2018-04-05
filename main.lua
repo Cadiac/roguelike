@@ -37,7 +37,7 @@ require 'objects/skills/Icewall'
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
   RectangleRoom = require 'rooms/RectangleRoom',
-  PolygonRoom = require 'rooms/PolygonRoom',
+  TitleScreen = require 'rooms/TitleScreen',
 }
 
 fonts = {}
@@ -73,11 +73,11 @@ function love.load()
   rooms = {}
 
   current_room = nil
-  gotoRoom('CircleRoom')
+  gotoRoom('TitleScreen')
 
   input:bind('f1', function() gotoRoom('CircleRoom') end)
   input:bind('f2', function() gotoRoom('RectangleRoom') end)
-  input:bind('f3', function() gotoRoom('PolygonRoom') end)
+  input:bind('f3', function() gotoRoom('TitleScreen') end)
   input:bind('f4', function() camera:shake(4, 30, 0.5) end)
 
   input:bind('f5', function()
@@ -98,7 +98,7 @@ function love.load()
     end
   end)
 
-  input:bind('mouse1', 'shoot')
+  input:bind('mouse1', 'mouse1')
   input:bind('1', 'skill_slot_1')
   input:bind('2', 'skill_slot_2')
   input:bind('3', 'skill_slot_3')
@@ -130,7 +130,6 @@ function love.update(dt)
 end
 
 function love.draw()
-  -- Debug
   local mouse_x, mouse_y = love.mouse.getPosition()
 
   if drawDebug then
