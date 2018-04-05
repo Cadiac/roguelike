@@ -23,10 +23,6 @@ function distance(x1, y1, x2, y2)
 end
 
 function coordsInDirection(x, y, distance, angle)
-  print(x)
-  print(y)
-  print(distance)
-  print(angle)
   return x + distance*math.cos(angle), y + distance*math.sin(angle)
 end
 

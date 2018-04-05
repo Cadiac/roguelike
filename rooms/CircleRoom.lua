@@ -27,7 +27,7 @@ function CircleRoom:new()
 
   self.player = self.area:addGameObject('Player', gw/2, gh/2, {
     skill_slot_1 = Skill(),
-    skill_slot_2 = Skill(),
+    skill_slot_2 = Icewall(),
     skill_slot_3 = Fireball(),
     skill_slot_4 = PoisonDart()
   })

@@ -22,6 +22,7 @@ require 'objects/ProjectileDeathEffect'
 require 'objects/ExplodeParticle'
 require 'objects/TickEffect'
 require 'objects/InfoText'
+require 'objects/DestructibleObject'
 
 -- Stateless components
 require 'objects/ResourceBar'
@@ -31,6 +32,7 @@ require 'objects/ActionBarIcon'
 require 'objects/skills/Skill'
 require 'objects/skills/Fireball'
 require 'objects/skills/PoisonDart'
+require 'objects/skills/Icewall'
 
 local available_rooms = {
   CircleRoom = require 'rooms/CircleRoom',
@@ -40,7 +42,7 @@ local available_rooms = {
 
 fonts = {}
 
-drawDebug = false
+drawDebug = true
 
 function love.load()
   input = Input()
@@ -111,6 +113,12 @@ function love.load()
   input:bind('w', 'up')
   input:bind('s', 'down')
 
+  if drawDebug then input:bind('f12',
+    function()
+      debug.debug()
+    end)
+  end
+
   hp_bar_bg = {x = gw/2, y = gh/2, w = 200, h = 40}
   hp_bar_fg = {x = gw/2, y = gh/2, w = 200, h = 40}
 end
@@ -124,8 +132,11 @@ end
 function love.draw()
   -- Debug
   local mouse_x, mouse_y = love.mouse.getPosition()
-  local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
-  love.graphics.print(statistics, 10, 10)
+
+  if drawDebug then
+    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
+    love.graphics.print(statistics, 10, 10)
+  end
 
   -- Flash background color
   if flash_frames then
