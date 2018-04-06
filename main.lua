@@ -11,6 +11,8 @@ require 'GameObject'
 require 'utils'
 require 'objects/Area'
 require 'objects/Shake'
+require 'objects/GameCoordinator'
+require 'objects/GameMap'
 
 -- GameObjects
 require 'objects/game_objects/Circle'
@@ -57,7 +59,7 @@ local available_rooms = {
 
 fonts = {}
 
-drawDebug = false
+drawDebug = true
 
 function love.load()
   input = Input()
@@ -108,8 +110,55 @@ function love.load()
 
   rebindKeys()
 
-  hp_bar_bg = {x = gw/2, y = gh/2, w = 200, h = 40}
-  hp_bar_fg = {x = gw/2, y = gh/2, w = 200, h = 40}
+  -- Experimental
+
+  tilesetImage = love.graphics.newImage('resources/sprites/example-tileset.png')
+  tilesetImage:setFilter('nearest', 'nearest')
+  tileSize = 32
+  tilesDisplayWidth = 32
+  tilesDisplayHeight = 32
+  mapX = 1
+  mapY = 1
+
+  tileQuads = {}
+  mapWidth = 60
+  mapHeight = 40
+
+  map = {}
+  for x=1,mapWidth do
+    map[x] = {}
+    for y=1,mapHeight do
+      map[x][y] = love.math.random(0,3)
+    end
+  end
+
+  -- grass
+  tileQuads[0] = love.graphics.newQuad(0 * tileSize, 20 * tileSize, tileSize, tileSize,
+    tilesetImage:getWidth(), tilesetImage:getHeight())
+  -- kitchen floor tile
+  tileQuads[1] = love.graphics.newQuad(2 * tileSize, 0 * tileSize, tileSize, tileSize,
+    tilesetImage:getWidth(), tilesetImage:getHeight())
+  -- parquet flooring
+  tileQuads[2] = love.graphics.newQuad(4 * tileSize, 0 * tileSize, tileSize, tileSize,
+    tilesetImage:getWidth(), tilesetImage:getHeight())
+  -- middle of red carpet
+  tileQuads[3] = love.graphics.newQuad(3 * tileSize, 9 * tileSize, tileSize, tileSize,
+    tilesetImage:getWidth(), tilesetImage:getHeight())
+
+  tilesetBatch = love.graphics.newSpriteBatch(tilesetImage, tilesDisplayWidth * tilesDisplayHeight)
+
+  updateTilesetBatch()
+end
+
+function updateTilesetBatch()
+  tilesetBatch:clear()
+  for x=0, tilesDisplayWidth-1 do
+    for y=0, tilesDisplayHeight-1 do
+      tilesetBatch:add(tileQuads[map[x+math.floor(mapX)][y+math.floor(mapX)]],
+        x*tileSize/2, y*tileSize/2)
+    end
+  end
+  tilesetBatch:flush()
 end
 
 function love.update(dt)
@@ -120,22 +169,6 @@ end
 
 function love.draw()
   local mouse_x, mouse_y = love.mouse.getPosition()
-
-  if drawDebug then
-    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d)"):format(
-      love.timer.getFPS(),
-      collectgarbage("count"),
-      mouse_x,
-      mouse_y,
-      (current_room.room.player and current_room.room.player.x) or 0,
-      (current_room.room.player and current_room.room.player.y) or 0
-    )
-    love.graphics.setColor({255, 255, 255})
-    love.graphics.print(statistics, 10, 10)
-    love.graphics.line(sx*gw/2, 0, sx*gw/2, sy*gh)
-    love.graphics.line(0, sy*gh/2, sx*gw, sy*gh/2)
-
-  end
 
   -- Flash background color
   if flash_frames then
@@ -150,6 +183,21 @@ function love.draw()
   -- Mouse
   love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
   love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
+
+  if drawDebug then
+    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d)"):format(
+      love.timer.getFPS(),
+      collectgarbage("count"),
+      mouse_x,
+      mouse_y,
+      (current_room.room.player and current_room.room.player.x) or 0,
+      (current_room.room.player and current_room.room.player.y) or 0
+    )
+    love.graphics.setColor({255, 255, 255})
+    love.graphics.print(statistics, 10, 10)
+    love.graphics.line(sx*gw/2, 0, sx*gw/2, sy*gh)
+    love.graphics.line(0, sy*gh/2, sx*gw, sy*gh/2)
+  end
 end
 
 function gotoRoom(room_type, ...)

@@ -37,26 +37,28 @@ function GameRoom:new(player_class)
 
   self.player = self.area:addGameObject(self.player_class, gw/2, gh/2)
 
-  self.enemies = {
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000))
-  }
+  -- self.enemies = {
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000))
+  -- }
 
-  local function process()
-    self.timer:cancel('process_every')
+  -- local function process()
+  --   self.timer:cancel('process_every')
 
-    for i = 1, 10 do
-      self.timer:after(i*0.25, function()
-        self.area:addGameObject('Circle', random(0, gw), random(0, gh))
-      end)
-    end
-  end
+  --   for i = 1, 10 do
+  --     self.timer:after(i*0.25, function()
+  --       self.area:addGameObject('Circle', random(0, gw), random(0, gh))
+  --     end)
+  --   end
+  -- end
 
-  process()
+  -- process()
+
+  self.game_coordinator = GameCoordinator(self)
 end
 
 function GameRoom:destroy()
@@ -65,7 +67,7 @@ function GameRoom:destroy()
 end
 
 function GameRoom:update(dt)
-  camera.smoother = Camera.smooth.damped(5)
+  camera.smoother = Camera.smooth.damped(50)
   -- camera:lockPosition(dt, gw/2, gh/2)
 
   self.area:update(dt)
@@ -81,6 +83,7 @@ function GameRoom:draw()
   love.graphics.setCanvas(self.main_canvas)
   love.graphics.clear()
     camera:attach(0, 0, gw, gh)
+    love.graphics.draw(tilesetBatch, math.floor(-1*(mapX%1)*tileSize), math.floor(-1*(mapY%1)*tileSize), 0, 1, 1)
     self.area:draw()
     camera:detach()
 

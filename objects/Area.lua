@@ -38,7 +38,9 @@ function Area:draw()
     else return a.depth < b.depth end
   end)
 
-  for _, game_object in ipairs(self.game_objects) do game_object:draw() end
+  for _, game_object in ipairs(self.game_objects) do
+    game_object:draw()
+  end
 
   if drawDebug and self.world then self.world:draw() end
 end
