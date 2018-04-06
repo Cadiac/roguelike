@@ -112,7 +112,11 @@ function love.draw()
 
   if drawDebug then
     local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
+    love.graphics.setColor({255, 255, 255})
     love.graphics.print(statistics, 10, 10)
+    love.graphics.line(sx*gw/2, 0, sx*gw/2, sy*gh)
+    love.graphics.line(0, sy*gh/2, sx*gw, sy*gh/2)
+
   end
 
   -- Flash background color

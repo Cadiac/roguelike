@@ -4,22 +4,25 @@ function TitleScreen:new()
   self.font = fonts.m5x7_16
   self.start_button_hilight = false
 
-  self.newgame_button = Button(gw, gh/2 + 70, {
+  self.newgame_button = Button(gw, gh/2 + 80, {
     ['text'] = 'New Game',
     ['action'] = function() gotoRoom('GameRoom') end,
-    ['text_scale'] = 3
+    ['text_scale'] = 3,
+    ['transparent'] = true
   })
 
-  self.continue_button = Button(gw, gh/2 + 140, {
+  self.continue_button = Button(gw, gh/2 + 150, {
     ['text'] = 'Continue',
     ['action'] = function() gotoRoom('GameRoom') end,
-    ['text_scale'] = 1
+    ['text_scale'] = 3,
+    ['transparent'] = true
   })
 
-  self.settings_button = Button(gw, gh/2 + 210, {
+  self.settings_button = Button(gw, gh/2 + 220, {
     ['text'] = 'Settings',
     ['action'] = function() gotoRoom('GameRoom') end,
-    ['text_scale'] = 2
+    ['text_scale'] = 3,
+    ['transparent'] = true
   })
 end
 
@@ -33,14 +36,22 @@ function TitleScreen:update(dt)
 end
 
 function TitleScreen:draw()
-  local title = 'Unnamed Game'
-  local title_width = self.font:getWidth(title)
-  local title_x = gw - (title_width * 3) + 90
-  local title_y = gh/2
+  local text = 'Unnamed Game'
+  local text_scale = 5
+  local text_width = self.font:getWidth(text) * text_scale
+
+  local text_x = gw - text_width/2
+  local text_y = gh/2
 
   love.graphics.setFont(self.font)
   love.graphics.setColor(holy_color)
-  love.graphics.print(title, title_x + 5, title_y + 3, 0, 3, 3)
+  love.graphics.print(text,
+    text_x,
+    text_y,
+    0,
+    text_scale,
+    text_scale
+  )
 
   self.newgame_button:draw()
   self.continue_button:draw()

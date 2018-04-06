@@ -5,16 +5,20 @@ function Button:new(x, y, opts)
 
   self.text = opts.text or 'Close'
   self.action = opts.action
+  self.transparent = opts.transparent or false
 
   self.font = fonts.m5x7_16
   self.text_scale = opts.text_scale or 1
   self.text_width = self.font:getWidth(self.text) * self.text_scale
   self.text_height = self.font:getHeight(self.text) * self.text_scale
 
-  self.rectangle_x = self.x - self.text_width/2
-  self.rectangle_y = self.y
-  self.rectangle_width = self.text_width + self.text_width/2
-  self.rectangle_height = self.text_height + self.text_height/3
+  self.text_x = self.x - self.text_width/2
+  self.text_y = self.y
+
+  self.rectangle_x = self.text_x - self.text_width/4
+  self.rectangle_y = self.text_y - self.text_scale
+  self.rectangle_width = (3/2) * self.text_width
+  self.rectangle_height = (4/3) * self.text_height
 
   self.start_button_hilight = false
 end
@@ -48,11 +52,14 @@ function Button:draw()
     love.graphics.setColor(holy_color)
   end
 
-  love.graphics.rectangle('fill', self.rectangle_x, self.rectangle_y, self.rectangle_width, self.rectangle_height)
-  love.graphics.setColor(death_color)
+  if not self.transparent then
+    love.graphics.rectangle('fill', self.text_x - self.text_width/4, self.rectangle_y, self.rectangle_width, self.rectangle_height)
+    love.graphics.setColor(death_color)
+  end
+
   love.graphics.print(self.text,
-    self.rectangle_x + (self.text_width/4) + self.text_scale,
-    self.rectangle_y + self.text_scale + 1,
+    self.text_x,
+    self.text_y,
     0,
     self.text_scale,
     self.text_scale
