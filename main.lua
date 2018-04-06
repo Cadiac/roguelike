@@ -15,10 +15,15 @@ require 'objects/Shake'
 -- GameObjects
 require 'objects/game_objects/Circle'
 require 'objects/game_objects/Rectangle'
-require 'objects/game_objects/Player'
 require 'objects/game_objects/Projectile'
 require 'objects/game_objects/InfoText'
 require 'objects/game_objects/DestructibleObject'
+
+-- Characters
+require 'objects/game_objects/characters/Player'
+require 'objects/game_objects/characters/Cleric'
+require 'objects/game_objects/characters/Elementalist'
+require 'objects/game_objects/characters/Necromancer'
 
 -- Effects
 require 'objects/game_objects/effects/ShootEffect'
@@ -80,6 +85,7 @@ function love.load()
   rooms = {}
 
   current_room = nil
+  selected_class = 'Elementalist'
   gotoRoom('TitleRoom')
 
   keybindings = {

@@ -6,16 +6,22 @@ function ClassSelectionRoom:new()
     (gw*sx)/2,
     gh/2 + 150,
     {
-      ['name'] = 'Cleric',
-      ['action'] = function() gotoRoom('GameRoom') end
+      ['name'] = 'Elementalist',
+      ['action'] = function()
+        selected_class = 'Elementalist'
+        gotoRoom('GameRoom', 'Elementalist')
+      end
     }
   )
   self.class_icon_2 = ClassSelectorIcon(
     (gw*sx)/2 - 150,
     gh/2 + 150,
     {
-      ['name'] = 'Mage',
-      ['action'] = function() gotoRoom('GameRoom') end
+      ['name'] = 'Cleric',
+      ['action'] = function()
+        selected_class = 'Cleric'
+        gotoRoom('GameRoom', 'Cleric')
+      end
     }
   )
   self.class_icon_3 = ClassSelectorIcon(
@@ -23,7 +29,10 @@ function ClassSelectionRoom:new()
     gh/2 + 150,
     {
       ['name'] = 'Necromancer',
-      ['action'] = function() gotoRoom('GameRoom') end
+      ['action'] = function()
+        selected_class = 'Necromancer'
+        gotoRoom('GameRoom', 'Necromancer')
+      end
     }
   )
 end

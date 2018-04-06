@@ -14,8 +14,7 @@ function Player:new(area, x, y, opts)
   self.r = -math.pi/2
   self.vx = 0
   self.vy = 0
-
-  self.attack_speed = 10
+  self.v_max = 100
 
   self.mana = 50
   self.max_mana = 100
@@ -31,7 +30,7 @@ function Player:new(area, x, y, opts)
     ['skill_slot_4'] = PoisonDart()
   }
 
-  self.timer:every(5, function() self:tick() end)
+  -- self.timer:every(5, function() self:tick() end)
 end
 
 function Player:destroy()
@@ -56,10 +55,10 @@ function Player:update(dt)
   local up = input:down('up')
   local down = input:down('down')
 
-  if left then self.vx = -100 end
-  if right then self.vx = 100 end
-  if up then self.vy = -100 end
-  if down then self.vy = 100 end
+  if left then self.vx = -self.v_max end
+  if right then self.vx = self.v_max end
+  if up then self.vy = -self.v_max end
+  if down then self.vy = self.v_max end
 
   if (left and right) then self.vx = 0
   elseif (up and down) then self.vy = 0
@@ -82,20 +81,6 @@ function Player:draw()
 
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
   love.graphics.setColor(255, 255, 255, 255)
-end
-
-function Player:shoot()
-  if (self.mana > 10 and self.shoot_cooldown_remaining == 0) then
-    self.mana = self.mana - 10
-    self.shoot_cooldown_remaining = self.shoot_cooldown
-
-    local distance = 1.5*self.w
-    local particle_x, particle_y = coordsInDirection(self.x, self.y, distance, self.r)
-
-    self.area:addGameObject('ShootEffect', particle_x, particle_y, {player = self, distance = distance})
-    self.area:addGameObject('Projectile', particle_x, particle_y, {r = self.r})
-    self.area:addGameObject('InfoText', self.x, self.y, {text = 'PEW', color = {128, 255, 0}})
-  end
 end
 
 function Player:tick()

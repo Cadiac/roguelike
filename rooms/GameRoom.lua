@@ -1,6 +1,6 @@
 local GameRoom = Object:extend()
 
-function GameRoom:new()
+function GameRoom:new(player_class)
   self.area = Area()
   self.area:addPhysicsWorld()
 
@@ -11,6 +11,8 @@ function GameRoom:new()
 
   self.show_endscreen = false
   self.endscreen_object = nil
+
+  self.player_class = player_class or selected_class
 
   self.area.world:addCollisionClass('Solid')
   self.area.world:addCollisionClass('Player')
@@ -28,7 +30,7 @@ function GameRoom:new()
   wall_right:setCollisionClass('Solid')
   wall_right:setType('static')
 
-  self.player = self.area:addGameObject('Player', gw/2, gh/2)
+  self.player = self.area:addGameObject(self.player_class, gw/2, gh/2)
 
   local function process()
     self.timer:cancel('process_every')
