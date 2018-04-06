@@ -1,10 +1,11 @@
-function ActionBarIcon(x, y, opts)
-  local cooldown = opts.cooldown or 1
-  local cooldown_remaining = opts.cooldown_remaining or 0
-  local skill_icon = opts.skill_icon
-  local mana_cost = opts.mana_cost
-  local current_mana = opts.current_mana
-  local hotkey = opts.hotkey
+function ActionBarIcon(x, y, skill, opts)
+  local cooldown = skill.cooldown or 1
+  local cooldown_remaining = skill.cooldown_remaining or 0
+  local icon = skill.icon
+  local mana_cost = skill.mana_cost
+
+  local current_mana = opts.current_mana or 100
+  local hotkey = opts.hotkey or ''
 
   local width = opts.width or 32
   local height = opts.height or 32
@@ -17,7 +18,7 @@ function ActionBarIcon(x, y, opts)
   end
 
   -- Background
-  love.graphics.draw(skill_icon, x, y)
+  love.graphics.draw(icon, x, y)
   -- Low mana warning overlay
   if current_mana < mana_cost then
     love.graphics.setColor(0, 0, 0, 224)

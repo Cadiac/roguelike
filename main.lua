@@ -27,6 +27,7 @@ require 'objects/DestructibleObject'
 -- Stateless components
 require 'objects/ResourceBar'
 require 'objects/ActionBarIcon'
+require 'game/GameHUD'
 
 -- Skills
 require 'objects/skills/Skill'
@@ -35,9 +36,9 @@ require 'objects/skills/PoisonDart'
 require 'objects/skills/Icewall'
 
 local available_rooms = {
-  CircleRoom = require 'rooms/CircleRoom',
-  RectangleRoom = require 'rooms/RectangleRoom',
-  TitleScreen = require 'rooms/TitleScreen',
+  ['TitleRoom'] = require 'rooms/TitleRoom',
+  ['GameRoom'] = require 'rooms/GameRoom',
+  ['RectangleRoom'] = require 'rooms/RectangleRoom'
 }
 
 fonts = {}
@@ -73,51 +74,21 @@ function love.load()
   rooms = {}
 
   current_room = nil
-  gotoRoom('TitleScreen')
+  gotoRoom('TitleRoom')
 
-  input:bind('f1', function() gotoRoom('CircleRoom') end)
-  input:bind('f2', function() gotoRoom('RectangleRoom') end)
-  input:bind('f3', function() gotoRoom('TitleScreen') end)
-  input:bind('f4', function() camera:shake(4, 30, 0.5) end)
+  keybindings = {
+    ['mouse1'] = 'left_click',
+    ['1'] = 'skill_slot_1',
+    ['2'] = 'skill_slot_2',
+    ['3'] = 'skill_slot_3',
+    ['4'] = 'skill_slot_4',
+    ['a'] = 'left',
+    ['d'] = 'right',
+    ['w'] = 'up',
+    ['s'] = 'down'
+  }
 
-  input:bind('f5', function()
-    print("Before collection: " .. collectgarbage("count")/1024)
-    collectgarbage()
-    print("After collection: " .. collectgarbage("count")/1024)
-    print("Object count: ")
-    local counts = type_count()
-    for k, v in pairs(counts) do print(k, v) end
-    print("-------------------------------------")
-  end)
-
-  input:bind('g', function()
-    if current_room and current_room.room then
-      current_room.room:destroy()
-      rooms[current_room.type] = nil
-      current_room = nil
-    end
-  end)
-
-  input:bind('mouse1', 'mouse1')
-  input:bind('1', 'skill_slot_1')
-  input:bind('2', 'skill_slot_2')
-  input:bind('3', 'skill_slot_3')
-  input:bind('4', 'skill_slot_4')
-
-  input:bind('h', 'damage')
-  input:bind('e', 'expand')
-  input:bind('n', 'shrink')
-
-  input:bind('a', 'left')
-  input:bind('d', 'right')
-  input:bind('w', 'up')
-  input:bind('s', 'down')
-
-  if drawDebug then input:bind('f12',
-    function()
-      debug.debug()
-    end)
-  end
+  rebindKeys()
 
   hp_bar_bg = {x = gw/2, y = gh/2, w = 200, h = 40}
   hp_bar_fg = {x = gw/2, y = gh/2, w = 200, h = 40}
@@ -178,4 +149,38 @@ end
 function resize(s)
   love.window.setMode(s*gw, s*gh)
   sx, sy = s, s
+end
+
+function rebindKeys()
+  input:unbindAll()
+  for keybinding, value in pairs(keybindings) do
+    print('binding ' .. keybinding .. ' to value ' .. value)
+    input:bind(keybinding, value)
+  end
+
+  if drawDebug then
+    input:bind('f1', function() gotoRoom('TitleRoom') end)
+    input:bind('f2', function() gotoRoom('GameRoom') end)
+    input:bind('f3', function() gotoRoom('RectangleRoom') end)
+    input:bind('f4', function() camera:shake(4, 30, 0.5) end)
+    input:bind('f5', function()
+      print("Before collection: " .. collectgarbage("count")/1024)
+      collectgarbage()
+      print("After collection: " .. collectgarbage("count")/1024)
+      print("Object count: ")
+      local counts = type_count()
+      for k, v in pairs(counts) do print(k, v) end
+      print("-------------------------------------")
+    end)
+
+    input:bind('f6', function()
+      if current_room and current_room.room then
+        current_room.room:destroy()
+        rooms[current_room.type] = nil
+        current_room = nil
+      end
+    end)
+
+    input:bind('f12', function() debug.debug() end)
+  end
 end

@@ -24,10 +24,12 @@ function Player:new(area, x, y, opts)
   self.hp = 100
   self.max_hp = 100
 
-  self.skill_slot_1 = opts.skill_slot_1
-  self.skill_slot_2 = opts.skill_slot_2
-  self.skill_slot_3 = opts.skill_slot_3
-  self.skill_slot_4 = opts.skill_slot_4
+  self.equipped_skills = {
+    ['skill_slot_1'] = Skill(),
+    ['skill_slot_2'] = Icewall(),
+    ['skill_slot_3'] = Fireball(),
+    ['skill_slot_4'] = PoisonDart()
+  }
 
   self.timer:every(5, function() self:tick() end)
 end
@@ -41,10 +43,10 @@ function Player:update(dt)
 
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
 
-  self.skill_slot_1:update(dt)
-  self.skill_slot_2:update(dt)
-  self.skill_slot_3:update(dt)
-  self.skill_slot_4:update(dt)
+  for keybind, skill in pairs(self.equipped_skills) do
+    skill:update(dt)
+    if input:down(keybind, 0.5) then skill:cast(self.area, self, self.x, self.y, self.r) end
+  end
 
   self.vx = 0
   self.vy = 0
@@ -67,11 +69,6 @@ function Player:update(dt)
   end
 
   self.collider:setLinearVelocity(self.vx, self.vy)
-
-  if input:down('skill_slot_1', 0.5) then self.skill_slot_1:cast(self.area, self, self.x, self.y, self.r) end
-  if input:down('skill_slot_2', 0.5) then self.skill_slot_2:cast(self.area, self, self.x, self.y, self.r) end
-  if input:down('skill_slot_3', 0.5) then self.skill_slot_3:cast(self.area, self, self.x, self.y, self.r) end
-  if input:down('skill_slot_4', 0.5) then self.skill_slot_4:cast(self.area, self, self.x, self.y, self.r) end
 
   if self.collider:enter('Solid') then self:takeDamage(50, 'environment') end
 end

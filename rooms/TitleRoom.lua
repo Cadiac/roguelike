@@ -23,8 +23,8 @@ function TitleScreen:update(dt)
      mouse_y >= newgame_y and mouse_y <= newgame_y + newgame_button_height then
     self.start_button_hilight = true
     -- Start game
-    if input:pressed('mouse1') then
-      gotoRoom('CircleRoom')
+    if input:pressed('left_click') then
+      gotoRoom('GameRoom')
       self.start_button_hilight = false
     end
   else
