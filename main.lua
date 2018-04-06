@@ -31,6 +31,7 @@ require 'ui/GameHUD'
 require 'ui/EndScreen'
 require 'ui/ResourceBar'
 require 'ui/ActionBarIcon'
+require 'ui/Button'
 
 -- Skills
 require 'objects/skills/Skill'
