@@ -27,7 +27,10 @@ require 'objects/DestructibleObject'
 -- Stateless components
 require 'objects/ResourceBar'
 require 'objects/ActionBarIcon'
+
+-- Other UI
 require 'game/GameHUD'
+require 'game/EndScreen'
 
 -- Skills
 require 'objects/skills/Skill'
@@ -77,15 +80,18 @@ function love.load()
   gotoRoom('TitleRoom')
 
   keybindings = {
-    ['mouse1'] = 'left_click',
-    ['1'] = 'skill_slot_1',
-    ['2'] = 'skill_slot_2',
-    ['3'] = 'skill_slot_3',
-    ['4'] = 'skill_slot_4',
-    ['a'] = 'left',
-    ['d'] = 'right',
-    ['w'] = 'up',
-    ['s'] = 'down'
+    ['left_click'] = 'mouse1',
+    ['skill_slot_1'] = '1',
+    ['skill_slot_2'] = '2',
+    ['skill_slot_3'] = '3',
+    ['skill_slot_4'] = '4',
+    ['left'] = 'a',
+    ['right'] = 'd',
+    ['up'] = 'w',
+    ['down'] = 's',
+    ['restart'] = 'r',
+    ['return'] = 'return',
+    ['escape'] = 'escape'
   }
 
   rebindKeys()
@@ -153,9 +159,8 @@ end
 
 function rebindKeys()
   input:unbindAll()
-  for keybinding, value in pairs(keybindings) do
-    print('binding ' .. keybinding .. ' to value ' .. value)
-    input:bind(keybinding, value)
+  for event, keybinding in pairs(keybindings) do
+    input:bind(keybinding, event)
   end
 
   if drawDebug then

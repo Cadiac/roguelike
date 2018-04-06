@@ -123,4 +123,6 @@ function Player:die()
   for i = 1, love.math.random(8, 12) do
     self.area:addGameObject('ExplodeParticle', self.x, self.y)
   end
+
+  current_room.room:finish()
 end

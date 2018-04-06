@@ -9,6 +9,9 @@ function GameRoom:new()
   self.timer = Timer()
   self.main_canvas = love.graphics.newCanvas(gw, gh)
 
+  self.show_endscreen = false
+  self.endscreen_object = nil
+
   self.area.world:addCollisionClass('Solid')
   self.area.world:addCollisionClass('Player')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
@@ -28,7 +31,7 @@ function GameRoom:new()
   self.player = self.area:addGameObject('Player', gw/2, gh/2)
 
   local function process()
-    timer:cancel('process_every')
+    self.timer:cancel('process_every')
 
     for i = 1, 10 do
       self.timer:after(i*0.25, function()
@@ -51,6 +54,8 @@ function GameRoom:update(dt)
 
   self.area:update(dt)
   self.timer:update(dt)
+
+  if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
 
 function GameRoom:draw()
@@ -59,6 +64,7 @@ function GameRoom:draw()
     camera:attach(0, 0, gw, gh)
     self.area:draw()
     GameHUD(self.player)
+    if self.show_endscreen and self.endscreen_object then self.endscreen_object:draw() end
   	camera:detach()
   love.graphics.setCanvas()
 
@@ -66,6 +72,13 @@ function GameRoom:draw()
   love.graphics.setBlendMode('alpha', 'premultiplied')
   love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
   love.graphics.setBlendMode('alpha')
+end
+
+function GameRoom:finish()
+  self.timer:after(1, function()
+    self.show_endscreen = true
+    self.endscreen_object = EndScreen(self)
+  end)
 end
 
 return GameRoom
