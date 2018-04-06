@@ -32,6 +32,7 @@ require 'ui/EndScreen'
 require 'ui/ResourceBar'
 require 'ui/ActionBarIcon'
 require 'ui/Button'
+require 'ui/ClassSelectorIcon'
 
 -- Skills
 require 'objects/skills/Skill'
@@ -41,6 +42,7 @@ require 'objects/skills/Icewall'
 
 local available_rooms = {
   ['TitleRoom'] = require 'rooms/TitleRoom',
+  ['ClassSelectionRoom'] = require 'rooms/ClassSelectionRoom',
   ['GameRoom'] = require 'rooms/GameRoom',
   ['RectangleRoom'] = require 'rooms/RectangleRoom'
 }

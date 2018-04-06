@@ -6,7 +6,7 @@ function TitleScreen:new()
 
   self.newgame_button = Button(gw, gh/2 + 80, {
     ['text'] = 'New Game',
-    ['action'] = function() gotoRoom('GameRoom') end,
+    ['action'] = function() gotoRoom('ClassSelectionRoom') end,
     ['text_scale'] = 3,
     ['transparent'] = true
   })
