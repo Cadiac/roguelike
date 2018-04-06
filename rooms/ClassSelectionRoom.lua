@@ -6,7 +6,7 @@ function ClassSelectionRoom:new()
     (gw*sx)/2,
     gh/2 + 150,
     {
-      ['name'] = 'Mage',
+      ['name'] = 'Cleric',
       ['action'] = function() gotoRoom('GameRoom') end
     }
   )
@@ -22,7 +22,7 @@ function ClassSelectionRoom:new()
     (gw*sx)/2 + 150,
     gh/2 + 150,
     {
-      ['name'] = 'Mage',
+      ['name'] = 'Necromancer',
       ['action'] = function() gotoRoom('GameRoom') end
     }
   )
