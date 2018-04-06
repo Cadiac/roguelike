@@ -13,24 +13,24 @@ require 'objects/Area'
 require 'objects/Shake'
 
 -- GameObjects
-require 'objects/Circle'
-require 'objects/Rectangle'
-require 'objects/Player'
-require 'objects/ShootEffect'
-require 'objects/Projectile'
-require 'objects/ProjectileDeathEffect'
-require 'objects/ExplodeParticle'
-require 'objects/TickEffect'
-require 'objects/InfoText'
-require 'objects/DestructibleObject'
+require 'objects/game_objects/Circle'
+require 'objects/game_objects/Rectangle'
+require 'objects/game_objects/Player'
+require 'objects/game_objects/Projectile'
+require 'objects/game_objects/InfoText'
+require 'objects/game_objects/DestructibleObject'
 
--- Stateless components
-require 'objects/ResourceBar'
-require 'objects/ActionBarIcon'
+-- Effects
+require 'objects/game_objects/effects/ShootEffect'
+require 'objects/game_objects/effects/ProjectileDeathEffect'
+require 'objects/game_objects/effects/ExplodeParticle'
+require 'objects/game_objects/effects/TickEffect'
 
 -- Other UI
-require 'game/GameHUD'
-require 'game/EndScreen'
+require 'ui/GameHUD'
+require 'ui/EndScreen'
+require 'ui/ResourceBar'
+require 'ui/ActionBarIcon'
 
 -- Skills
 require 'objects/skills/Skill'
