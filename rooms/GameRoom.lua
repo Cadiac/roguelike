@@ -59,6 +59,7 @@ function GameRoom:new(player_class)
   -- process()
 
   self.game_coordinator = GameCoordinator(self)
+  self.map = GameMap(self)
 end
 
 function GameRoom:destroy()
@@ -72,6 +73,7 @@ function GameRoom:update(dt)
 
   self.area:update(dt)
   self.timer:update(dt)
+  self.map:update(dt)
 
   local dx,dy = self.player.x - camera.x, self.player.y - camera.y
   camera:move(dx/2, dy/2)
@@ -82,8 +84,8 @@ end
 function GameRoom:draw()
   love.graphics.setCanvas(self.main_canvas)
   love.graphics.clear()
+    self.map:draw()
     camera:attach(0, 0, gw, gh)
-    love.graphics.draw(tilesetBatch, math.floor(-1*(mapX%1)*tileSize), math.floor(-1*(mapY%1)*tileSize), 0, 1, 1)
     self.area:draw()
     camera:detach()
 

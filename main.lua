@@ -110,55 +110,9 @@ function love.load()
 
   rebindKeys()
 
-  -- Experimental
-
-  tilesetImage = love.graphics.newImage('resources/sprites/example-tileset.png')
-  tilesetImage:setFilter('nearest', 'nearest')
-  tileSize = 32
-  tilesDisplayWidth = 32
-  tilesDisplayHeight = 32
-  mapX = 1
-  mapY = 1
-
-  tileQuads = {}
-  mapWidth = 60
-  mapHeight = 40
-
-  map = {}
-  for x=1,mapWidth do
-    map[x] = {}
-    for y=1,mapHeight do
-      map[x][y] = love.math.random(0,3)
-    end
-  end
-
-  -- grass
-  tileQuads[0] = love.graphics.newQuad(0 * tileSize, 20 * tileSize, tileSize, tileSize,
-    tilesetImage:getWidth(), tilesetImage:getHeight())
-  -- kitchen floor tile
-  tileQuads[1] = love.graphics.newQuad(2 * tileSize, 0 * tileSize, tileSize, tileSize,
-    tilesetImage:getWidth(), tilesetImage:getHeight())
-  -- parquet flooring
-  tileQuads[2] = love.graphics.newQuad(4 * tileSize, 0 * tileSize, tileSize, tileSize,
-    tilesetImage:getWidth(), tilesetImage:getHeight())
-  -- middle of red carpet
-  tileQuads[3] = love.graphics.newQuad(3 * tileSize, 9 * tileSize, tileSize, tileSize,
-    tilesetImage:getWidth(), tilesetImage:getHeight())
-
-  tilesetBatch = love.graphics.newSpriteBatch(tilesetImage, tilesDisplayWidth * tilesDisplayHeight)
-
-  updateTilesetBatch()
-end
-
-function updateTilesetBatch()
-  tilesetBatch:clear()
-  for x=0, tilesDisplayWidth-1 do
-    for y=0, tilesDisplayHeight-1 do
-      tilesetBatch:add(tileQuads[map[x+math.floor(mapX)][y+math.floor(mapX)]],
-        x*tileSize/2, y*tileSize/2)
-    end
-  end
-  tilesetBatch:flush()
+  -- Sprites
+  atlas = love.graphics.newImage('resources/sprites/example-tileset.png')
+  atlas:setFilter('nearest', 'nearest')
 end
 
 function love.update(dt)
