@@ -4,6 +4,8 @@ function DestructibleObject:new(area, x, y, opts)
   DestructibleObject.super.new(self, area, x, y, opts)
   self.depth = 50
 
+  self.age = 0
+  self.max_age = opts.max_age
   self.width = opts.width or 50
   self.height = opts.height or 50
   self.r = opts.r or 0
@@ -26,6 +28,10 @@ function DestructibleObject:update(dt)
 
   if self.collider:enter('Projectile') then self.hp = self.hp - 1 end
   if self.hp <= 0 then self:die() end
+  if self.max_age then
+    self.age = self.age + dt
+    if self.age >= self.max_age then self:die() end
+  end
 end
 
 function DestructibleObject:draw()
@@ -39,5 +45,5 @@ end
 
 function DestructibleObject:die()
   self.dead = true
-  self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {w = 3*self.width, color = self.color})
+  self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {w = 2*self.width, color = self.color})
 end
