@@ -5,7 +5,7 @@ function Player:new(area, x, y, opts)
   self.depth = 100
 
   self.x, self.y = x, y
-  self.w, self.h = 12, 12
+  self.w = 12
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
@@ -69,7 +69,7 @@ function Player:update(dt)
 
   self.collider:setLinearVelocity(self.vx, self.vy)
 
-  if self.collider:enter('Solid') then self:takeDamage(50, 'environment') end
+  if self.collider:enter('Enemy') then self:takeDamage(50, 'physical') end
 end
 
 function Player:draw()

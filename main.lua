@@ -19,11 +19,14 @@ require 'objects/game_objects/Projectile'
 require 'objects/game_objects/InfoText'
 require 'objects/game_objects/DestructibleObject'
 
--- Characters
-require 'objects/game_objects/characters/Player'
-require 'objects/game_objects/characters/Cleric'
-require 'objects/game_objects/characters/Elementalist'
-require 'objects/game_objects/characters/Necromancer'
+-- Player Classes
+require 'objects/game_objects/player/Player'
+require 'objects/game_objects/player/Cleric'
+require 'objects/game_objects/player/Elementalist'
+require 'objects/game_objects/player/Necromancer'
+
+-- Enemies
+require 'objects/game_objects/enemies/Enemy'
 
 -- Effects
 require 'objects/game_objects/effects/ShootEffect'

@@ -16,7 +16,12 @@ function GameRoom:new(player_class)
 
   self.area.world:addCollisionClass('Solid')
   self.area.world:addCollisionClass('Player')
+  self.area.world:addCollisionClass('Enemy')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
+
+  ceiling = self.area.world:newRectangleCollider(0, 0, gw, 20)
+  ceiling:setCollisionClass('Solid')
+  ceiling:setType('static')
 
   ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
   ground:setCollisionClass('Solid')
@@ -31,6 +36,12 @@ function GameRoom:new(player_class)
   wall_right:setType('static')
 
   self.player = self.area:addGameObject(self.player_class, gw/2, gh/2)
+
+  self.enemies = {
+    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100)),
+    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100)),
+    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100))
+  }
 
   local function process()
     self.timer:cancel('process_every')

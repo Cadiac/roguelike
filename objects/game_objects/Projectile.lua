@@ -26,6 +26,7 @@ end
 function Projectile:update(dt)
   Projectile.super.update(self, dt)
 
+  -- TODO, do something here
   if self.x < 0 then self:die() end
   if self.y < 0 then self:die() end
   if self.x > gw then self:die() end
@@ -34,6 +35,8 @@ function Projectile:update(dt)
   if self.max_range and distance(self.x, self.y, self.start_x, self.start_y) > self.max_range then self:die() end
 
   if self.collider:enter('Solid') then self:die() end
+  if self.collider:enter('Enemy') then self:die() end
+  if self.collider:enter('Player') then self:die() end
 end
 
 function Projectile:draw()
