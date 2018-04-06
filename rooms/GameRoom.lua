@@ -19,28 +19,31 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Enemy')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
-  ceiling = self.area.world:newRectangleCollider(0, 0, gw, 20)
-  ceiling:setCollisionClass('Solid')
-  ceiling:setType('static')
+  -- ceiling = self.area.world:newRectangleCollider(0, 0, gw, 20)
+  -- ceiling:setCollisionClass('Solid')
+  -- ceiling:setType('static')
 
-  ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
-  ground:setCollisionClass('Solid')
-  ground:setType('static')
+  -- ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
+  -- ground:setCollisionClass('Solid')
+  -- ground:setType('static')
 
-  wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
-  wall_left:setCollisionClass('Solid')
-  wall_left:setType('static')
+  -- wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
+  -- wall_left:setCollisionClass('Solid')
+  -- wall_left:setType('static')
 
-  wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
-  wall_right:setCollisionClass('Solid')
-  wall_right:setType('static')
+  -- wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
+  -- wall_right:setCollisionClass('Solid')
+  -- wall_right:setType('static')
 
   self.player = self.area:addGameObject(self.player_class, gw/2, gh/2)
 
   self.enemies = {
-    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100)),
-    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100)),
-    self.area:addGameObject('Enemy', gw/2 + random(-100, 100), gh/2 + random(-100, 100))
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
+    self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000))
   }
 
   local function process()
@@ -63,10 +66,13 @@ end
 
 function GameRoom:update(dt)
   camera.smoother = Camera.smooth.damped(5)
-  camera:lockPosition(dt, gw/2, gh/2)
+  -- camera:lockPosition(dt, gw/2, gh/2)
 
   self.area:update(dt)
   self.timer:update(dt)
+
+  local dx,dy = self.player.x - camera.x, self.player.y - camera.y
+  camera:move(dx/2, dy/2)
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
@@ -76,9 +82,10 @@ function GameRoom:draw()
   love.graphics.clear()
     camera:attach(0, 0, gw, gh)
     self.area:draw()
+    camera:detach()
+
     GameHUD(self.player)
     if self.show_endscreen and self.endscreen_object then self.endscreen_object:draw() end
-  	camera:detach()
   love.graphics.setCanvas()
 
   love.graphics.setColor(default_color)

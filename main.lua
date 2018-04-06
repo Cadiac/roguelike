@@ -57,7 +57,7 @@ local available_rooms = {
 
 fonts = {}
 
-drawDebug = true
+drawDebug = false
 
 function love.load()
   input = Input()
@@ -122,7 +122,14 @@ function love.draw()
   local mouse_x, mouse_y = love.mouse.getPosition()
 
   if drawDebug then
-    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d)"):format(love.timer.getFPS(), collectgarbage("count"), mouse_x, mouse_y)
+    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d)"):format(
+      love.timer.getFPS(),
+      collectgarbage("count"),
+      mouse_x,
+      mouse_y,
+      (current_room.room.player and current_room.room.player.x) or 0,
+      (current_room.room.player and current_room.room.player.y) or 0
+    )
     love.graphics.setColor({255, 255, 255})
     love.graphics.print(statistics, 10, 10)
     love.graphics.line(sx*gw/2, 0, sx*gw/2, sy*gh)

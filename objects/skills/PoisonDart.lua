@@ -7,6 +7,7 @@ function PoisonDart:new()
   self.cooldown = 4
   self.cooldown_remaining = 0
   self.mana_cost = 25
+  self.damage = 10
   self.icon = love.graphics.newImage('resources/sprites/skill_poisondart_icon.png')
   self.color = poison_color
 end
@@ -26,7 +27,8 @@ function PoisonDart:effect(area, caster)
         color = self.color,
         s = 2,
         v = 200 + love.math.random(0, 50),
-        max_range = 100 + love.math.random(0, 20)
+        max_range = 100 + love.math.random(0, 20),
+        damage = self.damage
       }
     )
   end

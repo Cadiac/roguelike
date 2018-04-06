@@ -17,7 +17,7 @@ function GameHUD(player, opts)
   })
   ActionBarIcon(gw/2 - 32, gh - 35, player.equipped_skills.skill_slot_2, {
     current_mana = player.mana,
-    hotkey = '1'
+    hotkey = '2'
   })
   ActionBarIcon(gw/2 + 3, gh - 35, player.equipped_skills.skill_slot_3, {
     current_mana = player.mana,

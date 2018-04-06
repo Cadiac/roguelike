@@ -40,6 +40,10 @@ end
 function Player:update(dt)
   Player.super.update(self, dt)
 
+  -- Mouse coordinates are scaled
+  local mouse_x, mouse_y = camera:getMousePosition()
+  self.r = angleTowardsCoords(self.x, self.y, mouse_x, mouse_y)
+
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
 
   for keybind, skill in pairs(self.equipped_skills) do
@@ -69,16 +73,18 @@ function Player:update(dt)
 
   self.collider:setLinearVelocity(self.vx, self.vy)
 
-  if self.collider:enter('Enemy') then self:takeDamage(50, 'physical') end
+  if self.collider:enter('Enemy') then self:takeDamage(10, 'physical') end
+  if self.collider:enter('Projectile') then
+    local collision_data = self.collider:getEnterCollisionData('Projectile')
+    local projectile = collision_data.collider:getObject()
+
+    self:takeDamage(projectile.damage, 'physical')
+  end
 end
 
 function Player:draw()
   love.graphics.setColor(224, 0, 0, 255)
   love.graphics.circle('line', self.x, self.y, self.w)
-
-  -- Mouse coordinates are scaled
-  self.r = angleTowardsCoords(self.x, self.y, love.mouse.getX() / sx, love.mouse.getY() / sy)
-
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
   love.graphics.setColor(255, 255, 255, 255)
 end

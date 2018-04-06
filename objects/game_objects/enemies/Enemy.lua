@@ -14,7 +14,7 @@ function Enemy:new(area, x, y, opts)
   self.r = -math.pi/2
   self.vx = 0
   self.vy = 0
-  self.v_max = 100
+  self.v_max = 90
 
   self.mana = 50
   self.max_mana = 100
@@ -23,21 +23,13 @@ function Enemy:new(area, x, y, opts)
   self.hp = 100
   self.max_hp = 100
 
+  self.passive = true
+  self.passive_end = nil
+
   self.equipped_skills = {
     ['skill_slot_1'] = Skill()
   }
 
-  self.direction = 'left'
-
-  self.timer:every(5, function() self:attack() end)
-  self.timer:every(2, function()
-    local rand = random(0, 3)
-
-    if rand == 0 then self.direction = 'left'
-    elseif rand == 1 then self.direction = 'right'
-    elseif rand == 2 then self.direction = 'up'
-    else self.direction = 'down' end
-  end)
 end
 
 function Enemy:destroy()
@@ -47,32 +39,53 @@ end
 function Enemy:update(dt)
   Enemy.super.update(self, dt)
 
-  self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
-
-  for keybind, skill in pairs(self.equipped_skills) do
-    skill:update(dt)
-    if input:down(keybind, 0.5) then skill:cast(self.area, self, self.x, self.y, self.r) end
+  if self.passive and
+    not current_room.room.player.dead and
+    distance(self.x, self.y, current_room.room.player.x, current_room.room.player.y) <= gw
+  then
+    print('Player nearby, waking up')
+    self.passive = false
+    self.passive_end = love.timer.getTime()
   end
 
-  self.vx = 0
-  self.vy = 0
+  if not self.passive then
+    -- Go passive again if player is dead or far
+    if current_room.room.player.dead then
+      print('Job Done!')
+      self.r = self.r + math.pi
+      self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
+      self.collider:setLinearVelocity(self.vx, self.vy)
+      self.passive = true
+    elseif love.timer.getTime() - self.passive_end > 10 and distance(
+      self.x, self.y, current_room.room.player.x, current_room.room.player.y) > gw then
+      print('Sleeping')
+      self.passive = true
+    else
+      self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
+      self.r = angleTowardsCoords(self.x, self.y, current_room.room.player.x, current_room.room.player.y)
 
-  if self.direction == 'left' then self.vx = -self.v_max end
-  if self.direction == 'right' then self.vx = self.v_max end
-  if self.direction == 'up' then self.vy = -self.v_max end
-  if self.direction == 'down' then self.vy = self.v_max end
+      for _, skill in pairs(self.equipped_skills) do
+        skill:update(dt)
+        if not self.passive then skill:cast(self.area, self, self.x, self.y, self.r) end
+      end
 
-  self.collider:setLinearVelocity(self.vx, self.vy)
+      -- Track players
+      self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
+      self.collider:setLinearVelocity(self.vx, self.vy)
 
-  if self.collider:enter('Projectile') then self:takeDamage(50, 'physical') end
+      if self.collider:enter('Projectile') then
+        local collision_data = self.collider:getEnterCollisionData('Projectile')
+        local projectile = collision_data.collider:getObject()
+
+        self:takeDamage(projectile.damage, 'physical')
+      end
+    end
+  end
 end
 
 function Enemy:draw()
   love.graphics.setColor(poison_color)
   love.graphics.circle('fill', self.x, self.y, self.w)
-
-  self.r = angleTowardsCoords(self.x, self.y, current_room.room.player.x, current_room.room.player.y)
-
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
 end
 
@@ -88,10 +101,6 @@ end
 
 function Enemy:changeMana(change)
   self.mana = math.max(self.mana + change, 0)
-end
-
-function Enemy:attack()
-  self.equipped_skills.skill_slot_1:cast(self.area, self, self.x, self.y, self.r)
 end
 
 function Enemy:die()

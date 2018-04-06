@@ -8,6 +8,7 @@ function Skill:new()
   self.cooldown_remaining = 0
   self.description = 'This description was intentionally left blank.'
   self.mana_cost = 10
+  self.damage = 10
   self.icon = love.graphics.newImage('resources/sprites/skill_poisondart_icon.png')
   self.color = {255, 255, 255}
 end
@@ -37,7 +38,7 @@ function Skill:effect(area, caster, ...)
   local particle_x, particle_y = coordsInDirection(caster.x, caster.y, distance, caster.r)
 
   area:addGameObject('ShootEffect', particle_x, particle_y, {parent = caster, distance = distance, color = self.color})
-  area:addGameObject('Projectile', particle_x, particle_y, {r = caster.r, color = self.color})
+  area:addGameObject('Projectile', particle_x, particle_y, {r = caster.r, color = self.color, damage = self.damage})
 end
 
 -- Skills

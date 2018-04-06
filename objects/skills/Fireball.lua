@@ -7,6 +7,7 @@ function Fireball:new()
   self.cooldown = 4
   self.cooldown_remaining = 0
   self.mana_cost = 25
+  self.damage = 50
   self.icon = love.graphics.newImage('resources/sprites/skill_fireball_icon.png')
   self.color = fire_color
 end
@@ -16,5 +17,15 @@ function Fireball:effect(area, caster)
   local particle_x, particle_y = coordsInDirection(caster.x, caster.y, distance, caster.r)
 
   area:addGameObject('ShootEffect', particle_x, particle_y, {parent = caster, distance = distance, color = self.color})
-  area:addGameObject('Projectile', particle_x, particle_y, {r = caster.r, color = self.color, s = 10, v = 100})
+  area:addGameObject('Projectile',
+    particle_x,
+    particle_y,
+    {
+      r = caster.r,
+      color = self.color,
+      s = 10,
+      v = 100,
+      damage = self.damage
+    }
+  )
 end
