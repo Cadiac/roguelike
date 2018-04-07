@@ -16,6 +16,10 @@ end
 function EndScreen:draw()
   love.graphics.setFont(self.font)
   love.graphics.setColor(default_color)
+
+  local gameover = string.upper('GAME OVER')
+  love.graphics.print(gameover, gw/2, gh/2 - 60, 0, 2, 2, math.floor(self.font:getWidth(gameover)/2), 0)
+
   local backtomenu = string.upper(keybindings['return']) .. ' TO GO TO BACK TO MENU'
   love.graphics.print(backtomenu, gw/2, gh/2 + 30, 0, 1, 1, math.floor(self.font:getWidth(backtomenu)/2), 0)
 

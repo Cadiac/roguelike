@@ -58,7 +58,7 @@ function GameRoom:new(player_class)
 
   -- process()
 
-  self.game_coordinator = GameCoordinator(self)
+  self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
 end
 
@@ -73,6 +73,7 @@ function GameRoom:update(dt)
 
   self.area:update(dt)
   self.timer:update(dt)
+  self.coordinator:update(dt)
   self.map:update(dt)
 
   local dx,dy = self.player.x - camera.x, self.player.y - camera.y
@@ -84,8 +85,8 @@ end
 function GameRoom:draw()
   love.graphics.setCanvas(self.main_canvas)
   love.graphics.clear()
-    self.map:draw()
     camera:attach(0, 0, gw, gh)
+    self.map:draw()
     self.area:draw()
     camera:detach()
 
