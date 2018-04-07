@@ -13,7 +13,7 @@ function PoisonDart:new()
 end
 
 function PoisonDart:effect(area, caster)
-  local distance = 30
+  local distance = 1.5*caster.w or 30
   local particle_x, particle_y = coordsInDirection(caster.x, caster.y, distance, caster.r)
 
   area:addGameObject('ShootEffect', particle_x, particle_y, {parent = caster, distance = distance, color = self.color})

@@ -19,6 +19,8 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Enemy')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
+  camera.smoother = Camera.smooth.damped(50)
+
   -- ceiling = self.area.world:newRectangleCollider(0, 0, gw, 20)
   -- ceiling:setCollisionClass('Solid')
   -- ceiling:setType('static')
@@ -68,9 +70,6 @@ function GameRoom:destroy()
 end
 
 function GameRoom:update(dt)
-  camera.smoother = Camera.smooth.damped(50)
-  -- camera:lockPosition(dt, gw/2, gh/2)
-
   self.area:update(dt)
   self.timer:update(dt)
   self.coordinator:update(dt)

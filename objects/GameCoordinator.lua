@@ -6,8 +6,8 @@ function GameCoordinator:new(game)
   self.game = game
 
   self.current_level = 0
-  self.max_width = 10
-  self.max_height = 10
+  self.max_width = 1000
+  self.max_height = 1000
   self.tile_types = {
     {
       ['type'] = 'grass',
@@ -31,12 +31,12 @@ function GameCoordinator:new(game)
 
   self.map = {}
 
-  self.timer:every(2, function()
-    self.game.area:addGameObject('Enemy',
-      self.game.player.x + fn.sample({-1, 1}) * random(gw/2, gw),
-      self.game.player.y + fn.sample({-1, 1}) * random(gh/2, gh)
-    )
-  end)
+  -- self.timer:every(2, function()
+  --   self.game.area:addGameObject('Enemy',
+  --     self.game.player.x + fn.sample({-1, 1}) * random(gw/2, gw),
+  --     self.game.player.y + fn.sample({-1, 1}) * random(gh/2, gh)
+  --   )
+  -- end)
 end
 
 function GameCoordinator:update(dt)
@@ -57,9 +57,9 @@ function GameCoordinator:generateMap()
       local x = (index - 1) % self.game.coordinator.max_width * 32
       local y = math.floor((index - 1) / self.game.coordinator.max_height) * 32
 
-      local collider = self.game.area.world:newRectangleCollider(x, y, 32, 32)
-      collider:setCollisionClass('Solid')
-      collider:setType('static')
+      -- local collider = self.game.area.world:newRectangleCollider(x, y, 32, 32)
+      -- collider:setCollisionClass('Solid')
+      -- collider:setType('static')
     end
   end
   print('Generated map with size', #self.map)
