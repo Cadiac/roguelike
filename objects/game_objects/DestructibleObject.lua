@@ -10,7 +10,7 @@ function DestructibleObject:new(area, x, y, opts)
   self.height = opts.height or 50
   self.r = opts.r or 0
   self.hp = opts.hp or 1
-  self.color = opts.color or {255, 255, 255}
+  self.color = opts.color or default_color
 
   self.collider = self.area.world:newRectangleCollider(x, y, self.width, self.height)
   self.collider:setCollisionClass('Solid')

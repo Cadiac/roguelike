@@ -5,7 +5,7 @@ function ShootEffect:new(area, x, y, opts)
   self.depth = 75
   self.w = 8
 
-  self.color = opts.color or {255, 255, 255}
+  self.color = opts.color or default_color
 
   self.timer:tween(0.1, self, {w = 0}, 'in-out-cubic', function() self.dead = true end)
 end

@@ -59,7 +59,7 @@ local available_rooms = {
 
 fonts = {}
 
-drawDebug = true
+drawDebug = false
 
 function love.load()
   input = Input()
@@ -124,15 +124,15 @@ end
 function love.draw()
   local mouse_x, mouse_y = love.mouse.getPosition()
 
-  -- Flash background color
-  if flash_frames then
-    love.graphics.setColor(255, 0, 0, 255)
-    love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
-    love.graphics.setColor(255, 255, 255)
-  end
-
   -- Render room
   if current_room and current_room.room then current_room.room:draw() end
+
+  -- Flash damage indicator
+  if flash_frames then
+    love.graphics.setColor(255, 0, 0, 128)
+    love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
+    love.graphics.setColor(default_color)
+  end
 
   -- Mouse
   love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
@@ -147,7 +147,7 @@ function love.draw()
       (current_room.room.player and current_room.room.player.x) or 0,
       (current_room.room.player and current_room.room.player.y) or 0
     )
-    love.graphics.setColor({255, 255, 255})
+    love.graphics.setColor(default_color)
     love.graphics.print(statistics, 10, 10)
     love.graphics.line(sx*gw/2, 0, sx*gw/2, sy*gh)
     love.graphics.line(0, sy*gh/2, sx*gw, sy*gh/2)
