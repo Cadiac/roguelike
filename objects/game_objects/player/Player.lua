@@ -29,8 +29,6 @@ function Player:new(area, x, y, opts)
     ['skill_slot_3'] = Fireball(),
     ['skill_slot_4'] = PoisonDart()
   }
-
-  -- self.timer:every(5, function() self:tick() end)
 end
 
 function Player:destroy()
@@ -84,7 +82,7 @@ end
 
 function Player:draw()
   love.graphics.setColor(224, 0, 0, 255)
-  love.graphics.circle('line', self.x, self.y, self.w)
+  love.graphics.circle('fill', self.x, self.y, self.w)
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
   love.graphics.setColor(255, 255, 255, 255)
 end
@@ -95,6 +93,10 @@ end
 
 function Player:takeDamage(damage, type)
   self.hp = math.max(self.hp - damage, 0)
+
+  flash(0.05)
+  slow(0.15, 0.2)
+  camera:shake(3, 30, 0.4)
 
   if self.hp == 0 then self:die() end
 end
@@ -107,7 +109,7 @@ function Player:die()
   self.mana = 0
   self.hp = 0
   self.dead = true
-  flash(0.05)
+  flash(0.15)
   slow(0.15, 1)
   camera:shake(3, 30, 0.4)
 

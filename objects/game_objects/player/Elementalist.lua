@@ -13,10 +13,10 @@ function Elementalist:new(area, x, y, opts)
   self.max_hp = 100
 
   self.equipped_skills = {
-    ['skill_slot_1'] = Fireball(),
+    ['skill_slot_1'] = Skill(),
     ['skill_slot_2'] = Fireball(),
-    ['skill_slot_3'] = Fireball(),
-    ['skill_slot_4'] = Fireball()
+    ['skill_slot_3'] = PoisonDart(),
+    ['skill_slot_4'] = Icewall()
   }
 end
 

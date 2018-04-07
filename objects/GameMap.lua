@@ -45,7 +45,8 @@ function GameMap:draw()
     for index = 1, #self.game.coordinator.map do
       local x = (index - 1) % self.game.coordinator.max_width * self.tileSize
       local y = math.floor((index - 1) / self.game.coordinator.max_height) * self.tileSize
-      love.graphics.draw(atlas, self.tileQuads[self.game.coordinator.map[index]], x, y, 0)
+
+      love.graphics.draw(atlas, self.tileQuads[self.game.coordinator.map[index]['type']], x, y, 0)
     end
   end
 end
