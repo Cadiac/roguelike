@@ -37,8 +37,6 @@ function GameRoom:new(player_class)
   -- wall_right:setCollisionClass('Solid')
   -- wall_right:setType('static')
 
-  self.player = self.area:addGameObject(self.player_class, gw/2, gh/2)
-
   -- self.enemies = {
   --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
   --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
@@ -62,6 +60,14 @@ function GameRoom:new(player_class)
 
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
+
+  for k, object in pairs(self.map:getObjects()) do
+    if object.name == "player" then
+      print('Spawning player at ', object.x * sx, object.y * sy)
+      self.player = self.area:addGameObject(self.player_class, object.x * sx, object.y * sy)
+      break
+    end
+  end
 end
 
 function GameRoom:destroy()
@@ -75,8 +81,10 @@ function GameRoom:update(dt)
   self.coordinator:update(dt)
   self.map:update(dt)
 
-  local dx,dy = self.player.x - camera.x, self.player.y - camera.y
-  camera:move(dx/2, dy/2)
+  if self.player then
+    local dx,dy = self.player.x - camera.x, self.player.y - camera.y
+    camera:move(dx/2, dy/2)
+  end
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
@@ -89,7 +97,7 @@ function GameRoom:draw()
     self.area:draw()
     camera:detach()
 
-    GameHUD(self.player)
+    if self.player then GameHUD(self.player) end
     if self.show_endscreen and self.endscreen_object then self.endscreen_object:draw() end
   love.graphics.setCanvas()
 

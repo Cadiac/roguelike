@@ -542,7 +542,7 @@ function Map:setObjectSpriteBatches(layer)
 
 			batches[tileset] = batches[tileset] or newBatch(image)
 
-			local sx =  object.width / tile.width 
+			local sx =  object.width / tile.width
 			local sy =  object.height / tile.height
 
 			local batch = batches[tileset]
@@ -714,7 +714,7 @@ end
 -- @param sy Scale on Y
 function Map:draw(tx, ty, sx, sy)
 	local current_canvas = lg.getCanvas()
-	lg.setCanvas(self.canvas)
+	lg.setCanvas{self.canvas, stencil=true}
 	lg.clear()
 
 	-- Scale map to 1.0 to draw onto canvas, this fixes tearing issues
@@ -723,9 +723,9 @@ function Map:draw(tx, ty, sx, sy)
 	lg.origin()
 	lg.translate(math.floor(tx or 0), math.floor(ty or 0))
 
-	for _, layer in ipairs(self.layers) do
-		if layer.visible and layer.opacity > 0 then
-			self:drawLayer(layer)
+  for _, layer in ipairs(self.layers) do
+    if layer.visible and layer.opacity > 0 then
+  		self:drawLayer(layer)
 		end
 	end
 
@@ -737,7 +737,7 @@ function Map:draw(tx, ty, sx, sy)
 	lg.origin()
 	lg.scale(sx or 1, sy or sx or 1)
 
-	lg.setCanvas(current_canvas)
+	lg.setCanvas{current_canvas, stencil=true}
 	lg.draw(self.canvas)
 
 	lg.pop()
