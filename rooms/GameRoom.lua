@@ -62,10 +62,28 @@ function GameRoom:new(player_class)
   self.map = GameMap(self)
 
   for k, object in pairs(self.map:getObjects()) do
-    if object.name == "player" then
+    if object.name == 'player' then
       print('Spawning player at ', object.x * sx, object.y * sy)
       self.player = self.area:addGameObject(self.player_class, object.x * sx, object.y * sy)
-      break
+    elseif object.name == 'wall' then
+      if object.width == 0 or object.height == 0 then
+        local wall = self.area.world:newLineCollider(
+          object.x * sx - 16,
+          object.y * sy - 16,
+          (object.x + object.width) * sx - 16,
+          (object.y + object.height) * sy - 16
+        )
+        wall:setCollisionClass('Solid')
+        wall:setType('static')
+      else
+        local wall = self.area.world:newRectangleCollider(
+          object.x * sx - 16,
+          object.y * sy - 16,
+          object.width * sx,
+          object.height * sy)
+        wall:setCollisionClass('Solid')
+        wall:setType('static')
+      end
     end
   end
 end

@@ -34,10 +34,19 @@ end
 -- Dummy skill, shoots projectile.
 function Skill:effect(area, caster, ...)
   local distance = 1.5*caster.w or 30
-  local particle_x, particle_y = coordsInDirection(caster.x, caster.y, 1.5*caster.w, caster.r)
+  local particle_x, particle_y = coordsInDirection(caster.x, caster.y, caster.w, caster.r)
 
   area:addGameObject('ShootEffect', particle_x, particle_y, {parent = caster, distance = distance, color = self.color})
-  area:addGameObject('Projectile', particle_x, particle_y, {r = caster.r, color = self.color, damage = self.damage})
+  area:addGameObject('Projectile',
+    particle_x,
+    particle_y,
+    {
+      r = caster.r,
+      color = self.color,
+      damage = self.damage,
+      caster = caster
+    }
+  )
 end
 
 -- Skills

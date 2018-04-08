@@ -12,7 +12,7 @@ function Projectile:new(area, x, y, opts)
   self.max_range = opts.max_range or (2 * gw)
 
   self.damage = opts.damage or 0
-
+  self.caster = opts.caster
   self.color = opts.color or default_color
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
@@ -31,8 +31,6 @@ function Projectile:update(dt)
   if self.max_range and distance(self.x, self.y, self.start_x, self.start_y) > self.max_range then self:die() end
 
   if self.collider:enter('Solid') then self:die() end
-  if self.collider:enter('Enemy') then self:die() end
-  if self.collider:enter('Player') then self:die() end
 end
 
 function Projectile:draw()

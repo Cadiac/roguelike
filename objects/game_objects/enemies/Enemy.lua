@@ -4,6 +4,8 @@ function Enemy:new(area, x, y, opts)
   Enemy.super.new(self, area, x, y, opts)
   self.depth = 90
 
+  self.type = 'enemy'
+
   self.x, self.y = x, y
   self.w = 12
 
@@ -77,7 +79,10 @@ function Enemy:update(dt)
         local collision_data = self.collider:getEnterCollisionData('Projectile')
         local projectile = collision_data.collider:getObject()
 
-        self:takeDamage(projectile.damage, 'physical')
+        if projectile.caster.type ~= 'enemy' then
+          self:takeDamage(projectile.damage, 'physical')
+          projectile:die()
+        end
       end
     end
   end

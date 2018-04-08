@@ -4,8 +4,10 @@ function Player:new(area, x, y, opts)
   Player.super.new(self, area, x, y, opts)
   self.depth = 100
 
+  self.type = 'player'
+
   self.x, self.y = x, y
-  self.w = 16
+  self.w = 12
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
@@ -76,7 +78,10 @@ function Player:update(dt)
     local collision_data = self.collider:getEnterCollisionData('Projectile')
     local projectile = collision_data.collider:getObject()
 
-    self:takeDamage(projectile.damage, 'physical')
+    if projectile.caster.type ~= 'player' then
+      self:takeDamage(projectile.damage, 'physical')
+      projectile:die()
+    end
   end
 end
 

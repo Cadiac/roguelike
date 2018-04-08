@@ -39,7 +39,7 @@ function DestructibleObject:draw()
   -- NOTE: Because we're defining the collider by center point, but we draw rectangle collider from top left corner.
   -- The middle should be at x + width/2 and y + height/2
   pushRotate(self.x, self.y, self.r)
-  love.graphics.rectangle('line', self.x - self.width/2, self.y - self.height/2, self.width, self.height)
+  love.graphics.rectangle('fill', self.x - self.width/2, self.y - self.height/2, self.width, self.height)
   love.graphics.pop()
 end
 
