@@ -9,6 +9,7 @@ function Icewall:new()
   self.mana_cost = 10
   self.icon = love.graphics.newImage('resources/sprites/skill_icewall_icon.png')
   self.color = ice_color
+  self.wall_hp = 3
 end
 
 function Icewall:effect(area, caster)
@@ -21,7 +22,7 @@ function Icewall:effect(area, caster)
     height = 20,
     color = self.color,
     r = caster.r,
-    hp = 5,
+    hp = self.wall_hp,
     max_age = self.cooldown
   })
 
@@ -31,7 +32,7 @@ function Icewall:effect(area, caster)
     height = 20,
     color = self.color,
     r = caster.r,
-    hp = 5,
+    hp = self.wall_hp,
     max_age = self.cooldown
   })
 
@@ -41,7 +42,7 @@ function Icewall:effect(area, caster)
     height = 20,
     color = self.color,
     r = caster.r,
-    hp = 5,
+    hp = self.wall_hp,
     max_age = self.cooldown
   })
 
@@ -51,7 +52,7 @@ function Icewall:effect(area, caster)
     height = 20,
     color = self.color,
     r = caster.r,
-    hp = 5,
+    hp = self.wall_hp,
     max_age = self.cooldown
   })
 
@@ -61,7 +62,7 @@ function Icewall:effect(area, caster)
     height = 20,
     color = self.color,
     r = caster.r,
-    hp = 5,
+    hp = self.wall_hp,
     max_age = self.cooldown
   })
 end

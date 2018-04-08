@@ -28,7 +28,6 @@ function Circle:update(dt)
 end
 
 function Circle:draw()
-  love.graphics.setColor(128, 128, 128, 128)
+  love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
   love.graphics.circle('fill', self.x, self.y, self.radius)
-  love.graphics.setColor(255, 255, 255, 255)
 end

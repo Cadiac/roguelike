@@ -82,7 +82,7 @@ function GameRoom:update(dt)
 end
 
 function GameRoom:draw()
-  love.graphics.setCanvas(self.main_canvas)
+  love.graphics.setCanvas{self.main_canvas, stencil=true}
   love.graphics.clear()
     camera:attach(0, 0, gw, gh)
     self.map:draw()

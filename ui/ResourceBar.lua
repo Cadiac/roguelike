@@ -8,13 +8,13 @@ function ResourceBar(x, y, opts)
   local font = fonts.m5x7_16
 
   -- Background
-  love.graphics.setColor(8, 8, 8)
+  love.graphics.setColor(0.031373, 0.031373, 0.031373)
   love.graphics.rectangle('fill', x, y, width + 1, height)
   -- Bar
   love.graphics.setColor(color)
   love.graphics.rectangle('fill', x, y, width * (resource / resource_max), height - 1)
   -- Border
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(default_color)
   love.graphics.rectangle('line', x, y, width + 1, height)
   -- Text
 

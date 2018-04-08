@@ -81,7 +81,7 @@ function Player:update(dt)
 end
 
 function Player:draw()
-  love.graphics.setColor(224, 0, 0, 255)
+  love.graphics.setColor(default_color)
   love.graphics.circle('fill', self.x, self.y, self.w)
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
 end
