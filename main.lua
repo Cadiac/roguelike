@@ -123,6 +123,7 @@ end
 
 function love.draw()
   local mouse_x, mouse_y = love.mouse.getPosition()
+  local cam_mouse_x, cam_mouse_y = camera:getMousePosition()
 
   -- Render room
   if current_room and current_room.room then current_room.room:draw() end
@@ -138,15 +139,18 @@ function love.draw()
   love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
 
   if drawDebug then
-    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d), camera: (%d,%d)"):format(
+    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d,%f), camera: (%d,%d), cmouse: (%d,%d)"):format(
       love.timer.getFPS(),
       collectgarbage("count"),
       mouse_x,
       mouse_y,
       (current_room.room.player and current_room.room.player.x) or 0,
       (current_room.room.player and current_room.room.player.y) or 0,
+      (current_room.room.player and current_room.room.player.r) or 0,
       camera.x or 0,
-      camera.y or 0
+      camera.y or 0,
+      cam_mouse_x or 0,
+      cam_mouse_y or 0
     )
     love.graphics.setColor(default_color)
     love.graphics.print(statistics, 10, 10)

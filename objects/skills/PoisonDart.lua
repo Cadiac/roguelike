@@ -25,7 +25,7 @@ function PoisonDart:effect(area, caster)
       {
         r = caster.r + (math.pi/6)*love.math.random(),
         color = self.color,
-        s = 2,
+        s = 1,
         v = 200 + love.math.random(0, 50),
         max_range = 100 + love.math.random(0, 20),
         damage = self.damage,

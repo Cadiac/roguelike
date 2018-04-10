@@ -7,7 +7,7 @@ function Player:new(area, x, y, opts)
   self.type = 'player'
 
   self.x, self.y = x, y
-  self.w = 12
+  self.w = 6 * sx
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
@@ -41,7 +41,7 @@ function Player:update(dt)
   Player.super.update(self, dt)
 
   -- Mouse coordinates are scaled
-  local mouse_x, mouse_y = camera:getMousePosition()
+  local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
   self.r = angleTowardsCoords(self.x, self.y, mouse_x, mouse_y)
 
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
@@ -88,7 +88,10 @@ end
 function Player:draw()
   love.graphics.setColor(hp_color)
   love.graphics.circle('fill', self.x, self.y, self.w)
+  love.graphics.setColor(hp_color)
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
+
+  if drawDebug then love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*gw, self.r)) end
 end
 
 function Player:tick()

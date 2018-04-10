@@ -19,7 +19,7 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Enemy')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
-  camera.smoother = Camera.smooth.damped(2)
+  camera.smoother = Camera.smooth.damped(20)
 
   -- local function process()
   --   self.timer:cancel('process_every')
@@ -77,14 +77,14 @@ function GameRoom:update(dt)
   self.map:update(dt)
 
   if self.player then
-    local mouse_x, mouse_y = camera:getMousePosition()
+    local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
 
     local cam_player_x_min, cam_player_y_min = love.graphics.getWidth()*0.45, love.graphics.getHeight()*0.45
     local cam_player_x_max, cam_player_y_max = love.graphics.getWidth()*0.55, love.graphics.getHeight()*0.55
 
     camera:lockWindow(dt,
-      self.player.x,
-      self.player.y,
+      (self.player.x + self.player.x + mouse_x) / 3,
+      (self.player.y + self.player.y + mouse_y) / 3,
       cam_player_x_min,
       cam_player_x_max,
       cam_player_y_min,

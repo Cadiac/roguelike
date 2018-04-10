@@ -7,7 +7,7 @@ function Enemy:new(area, x, y, opts)
   self.type = 'enemy'
 
   self.x, self.y = x, y
-  self.w = 12
+  self.w = 6 * sx
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
