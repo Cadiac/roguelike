@@ -138,13 +138,15 @@ function love.draw()
   love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
 
   if drawDebug then
-    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d)"):format(
+    local statistics = ("fps: %d, mem: %dKB, mouse: (%d,%d), player: (%d,%d), camera: (%d,%d)"):format(
       love.timer.getFPS(),
       collectgarbage("count"),
       mouse_x,
       mouse_y,
       (current_room.room.player and current_room.room.player.x) or 0,
-      (current_room.room.player and current_room.room.player.y) or 0
+      (current_room.room.player and current_room.room.player.y) or 0,
+      camera.x or 0,
+      camera.y or 0
     )
     love.graphics.setColor(default_color)
     love.graphics.print(statistics, 10, 10)

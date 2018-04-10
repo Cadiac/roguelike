@@ -11,6 +11,7 @@ function Enemy:new(area, x, y, opts)
 
   self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
   self.collider:setObject(self)
+  self.collider:setRestitution(0)
   self.collider:setCollisionClass('Enemy')
 
   self.r = -math.pi/2
@@ -66,14 +67,15 @@ function Enemy:update(dt)
       self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
       self.r = angleTowardsCoords(self.x, self.y, current_room.room.player.x, current_room.room.player.y)
 
-      for _, skill in pairs(self.equipped_skills) do
-        skill:update(dt)
-        if not self.passive then skill:cast(self.area, self, self.x, self.y, self.r) end
-      end
+      -- Attack randomly
+      -- for _, skill in pairs(self.equipped_skills) do
+      --   skill:update(dt)
+      --   if not self.passive then skill:cast(self.area, self, self.x, self.y, self.r) end
+      -- end
 
       -- Track players
-      self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
-      self.collider:setLinearVelocity(self.vx, self.vy)
+      -- self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
+      -- self.collider:setLinearVelocity(self.vx, self.vy)
 
       if self.collider:enter('Projectile') then
         local collision_data = self.collider:getEnterCollisionData('Projectile')

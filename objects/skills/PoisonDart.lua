@@ -7,7 +7,7 @@ function PoisonDart:new()
   self.cooldown = 4
   self.cooldown_remaining = 0
   self.mana_cost = 25
-  self.damage = 10
+  self.damage = 20
   self.icon = love.graphics.newImage('resources/sprites/skill_poisondart_icon.png')
   self.color = poison_color
 end

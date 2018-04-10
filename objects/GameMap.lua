@@ -2,7 +2,9 @@ GameMap = Object:extend()
 
 function GameMap:new(game)
   self.depth = 10
-
+  self.game = game
+  self.player_x = 0
+  self.player_y = 0
   -- self.tileSize = 32
   -- self.tileQuads = {}
 
@@ -40,11 +42,11 @@ end
 
 function GameMap:update(dt)
   self.map:update(dt)
-  -- if self.game then
-  --   self.map = self.game.coordinator.map
-  --   self.player_x = math.floor(self.game.player.x / self.tileSize)
-  --   self.player_y = math.floor(self.game.player.y / self.tileSize)
-  -- end
+  if self.game then
+    -- self.map = self.game.coordinator.map
+    self.player_x = math.floor(self.game.player.x)
+    self.player_y = math.floor(self.game.player.y)
+  end
 end
 
 function GameMap:draw()

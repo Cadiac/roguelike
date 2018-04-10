@@ -19,32 +19,7 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Enemy')
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
-  camera.smoother = Camera.smooth.damped(50)
-
-  -- ceiling = self.area.world:newRectangleCollider(0, 0, gw, 20)
-  -- ceiling:setCollisionClass('Solid')
-  -- ceiling:setType('static')
-
-  -- ground = self.area.world:newRectangleCollider(0, gh - 20, gw, 20)
-  -- ground:setCollisionClass('Solid')
-  -- ground:setType('static')
-
-  -- wall_left = self.area.world:newRectangleCollider(0, 0, 20, gh)
-  -- wall_left:setCollisionClass('Solid')
-  -- wall_left:setType('static')
-
-  -- wall_right = self.area.world:newRectangleCollider(gw - 20, 0, 20, gh)
-  -- wall_right:setCollisionClass('Solid')
-  -- wall_right:setType('static')
-
-  -- self.enemies = {
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000)),
-  --   self.area:addGameObject('Enemy', gw/2 + random(-1000, 1000), gh/2 + random(-1000, 1000))
-  -- }
+  camera.smoother = Camera.smooth.damped(2)
 
   -- local function process()
   --   self.timer:cancel('process_every')
@@ -65,6 +40,8 @@ function GameRoom:new(player_class)
     if object.name == 'player' then
       print('Spawning player at ', object.x * sx, object.y * sy)
       self.player = self.area:addGameObject(self.player_class, object.x * sx, object.y * sy)
+      camera.x = self.player.x
+      camera.y = self.player.y
     elseif object.name == 'wall' then
       if object.width == 0 or object.height == 0 then
         local wall = self.area.world:newLineCollider(
@@ -100,8 +77,20 @@ function GameRoom:update(dt)
   self.map:update(dt)
 
   if self.player then
-    local dx,dy = self.player.x - camera.x, self.player.y - camera.y
-    camera:move(dx/2, dy/2)
+    local mouse_x, mouse_y = camera:getMousePosition()
+
+    local cam_player_x_min, cam_player_y_min = love.graphics.getWidth()*0.45, love.graphics.getHeight()*0.45
+    local cam_player_x_max, cam_player_y_max = love.graphics.getWidth()*0.55, love.graphics.getHeight()*0.55
+
+    camera:lockWindow(dt,
+      self.player.x,
+      self.player.y,
+      cam_player_x_min,
+      cam_player_x_max,
+      cam_player_y_min,
+      cam_player_y_max
+    )
+    -- camera:move((mouse_x - camera.x)/100, (mouse_y - camera.y)/100)
   end
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
