@@ -21,17 +21,10 @@ function GameRoom:new(player_class)
 
   camera.smoother = Camera.smooth.damped(20)
 
-  -- local function process()
-  --   self.timer:cancel('process_every')
-
-  --   for i = 1, 10 do
-  --     self.timer:after(i*0.25, function()
-  --       self.area:addGameObject('Circle', random(0, gw), random(0, gh))
-  --     end)
-  --   end
-  -- end
-
-  -- process()
+  self.cam_player_x_min = love.graphics.getWidth()*0.45
+  self.cam_player_y_min = love.graphics.getHeight()*0.45
+  self.cam_player_x_max = love.graphics.getWidth()*0.55
+  self.cam_player_y_max = love.graphics.getHeight()*0.55
 
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
@@ -79,18 +72,14 @@ function GameRoom:update(dt)
   if self.player then
     local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
 
-    local cam_player_x_min, cam_player_y_min = love.graphics.getWidth()*0.45, love.graphics.getHeight()*0.45
-    local cam_player_x_max, cam_player_y_max = love.graphics.getWidth()*0.55, love.graphics.getHeight()*0.55
-
     camera:lockWindow(dt,
       (self.player.x + self.player.x + mouse_x) / 3,
       (self.player.y + self.player.y + mouse_y) / 3,
-      cam_player_x_min,
-      cam_player_x_max,
-      cam_player_y_min,
-      cam_player_y_max
+      self.cam_player_x_min,
+      self.cam_player_x_max,
+      self.cam_player_y_min,
+      self.cam_player_y_max
     )
-    -- camera:move((mouse_x - camera.x)/100, (mouse_y - camera.y)/100)
   end
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
