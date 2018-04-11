@@ -6,8 +6,8 @@ function DestructibleObject:new(area, x, y, opts)
 
   self.age = 0
   self.max_age = opts.max_age
-  self.width = opts.width or 50
-  self.height = opts.height or 50
+  self.width = (opts.width or 50) * sx
+  self.height = (opts.height or 50) * sy
   self.r = opts.r or 0
   self.hp = opts.hp or 1
   self.color = opts.color or default_color

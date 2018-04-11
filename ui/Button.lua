@@ -27,7 +27,8 @@ function Button:destroy()
 end
 
 function Button:update(dt)
-  local mouse_x, mouse_y = love.mouse.getPosition()
+  local mouse_x = love.mouse.getX() / sx
+  local mouse_y = love.mouse.getY() / sy
 
   -- Start game button
   if mouse_x >= self.rectangle_x and mouse_x <= self.rectangle_x + self.rectangle_width and

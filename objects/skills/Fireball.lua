@@ -23,7 +23,7 @@ function Fireball:effect(area, caster)
     {
       r = caster.r,
       color = self.color,
-      s = 10,
+      s = 5,
       v = 100,
       damage = self.damage,
       caster = caster
