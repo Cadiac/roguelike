@@ -117,8 +117,8 @@ end
 
 function love.update(dt)
   timer:update(dt*slow_amount)
-  camera:update(dt*slow_amount)
   if current_room and current_room.room then current_room.room:update(dt*slow_amount) end
+  camera:update(dt*slow_amount)
 end
 
 function love.draw()

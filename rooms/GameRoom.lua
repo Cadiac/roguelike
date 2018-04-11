@@ -20,6 +20,7 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
   camera.smoother = Camera.smooth.damped(20)
+  camera.scale = 1
 
   self.cam_player_x_min = love.graphics.getWidth()*0.45
   self.cam_player_y_min = love.graphics.getHeight()*0.45
@@ -33,8 +34,7 @@ function GameRoom:new(player_class)
     if object.name == 'player' then
       print('Spawning player at ', object.x * sx, object.y * sy)
       self.player = self.area:addGameObject(self.player_class, object.x * sx, object.y * sy)
-      camera.x = self.player.x
-      camera.y = self.player.y
+      camera:lookAt(self.player.x, self.player.y)
     elseif object.name == 'wall' then
       if object.width == 0 or object.height == 0 then
         local wall = self.area.world:newLineCollider(
