@@ -3,8 +3,13 @@ GameMap = Object:extend()
 function GameMap:new(game)
   self.depth = 10
   self.game = game
-  -- self.map = sti('resources/sprites/dungeon.lua', nil, 113, 60)
-  self.map = sti('resources/sprites/dungeon.lua')
+  self.tile_size = 16
+  self.map = sti(
+    'resources/sprites/dungeon.lua',
+    nil,
+    gw/4 - self.tile_size/2,
+    gh/4 - self.tile_size/2
+  )
 end
 
 function GameMap:update(dt)
