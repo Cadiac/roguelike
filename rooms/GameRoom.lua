@@ -29,33 +29,6 @@ function GameRoom:new(player_class)
 
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
-
-  for k, object in pairs(self.map:getObjects()) do
-    if object.name == 'player' then
-      print('Spawning player at ', object.x * sx, object.y * sy)
-      self.player = self.area:addGameObject(self.player_class, object.x * sx, object.y * sy)
-      camera:lookAt(self.player.x, self.player.y)
-    elseif object.name == 'wall' then
-      if object.width == 0 or object.height == 0 then
-        local wall = self.area.world:newLineCollider(
-          object.x * sx - 16,
-          object.y * sy - 16,
-          (object.x + object.width) * sx - 16,
-          (object.y + object.height) * sy - 16
-        )
-        wall:setCollisionClass('Solid')
-        wall:setType('static')
-      else
-        local wall = self.area.world:newRectangleCollider(
-          object.x * sx - 16,
-          object.y * sy - 16,
-          object.width * sx,
-          object.height * sy)
-        wall:setCollisionClass('Solid')
-        wall:setType('static')
-      end
-    end
-  end
 end
 
 function GameRoom:destroy()
@@ -109,6 +82,12 @@ function GameRoom:finish()
     self.show_endscreen = true
     self.endscreen_object = EndScreen(self)
   end)
+end
+
+function GameRoom:spawnPlayer(x, y)
+  print('Spawning player at ', x * sx, y * sy)
+  self.player = self.area:addGameObject(self.player_class, x * sx, y * sy)
+  camera:lookAt(self.player.x, self.player.y)
 end
 
 return GameRoom
