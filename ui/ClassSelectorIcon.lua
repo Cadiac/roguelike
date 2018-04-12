@@ -7,14 +7,14 @@ function ClassSelectorIcon:new(x, y, opts)
   self.name = opts.name
   self.action = opts.action
 
-  self.icon_width = 100
-  self.icon_height = 100
+  self.icon_width = 50
+  self.icon_height = 50
 
   self.selected = false
   self.resize_animation = nil
 
   self.font = fonts.m5x7_16
-  self.text_scale = 2
+  self.text_scale = 1
   self.text_width = self.font:getWidth(self.name) * self.text_scale
   self.text_height = self.font:getHeight(self.name) * self.text_scale
 
@@ -32,7 +32,8 @@ end
 function ClassSelectorIcon:update(dt)
   if self.timer then self.timer:update(dt) end
 
-  local mouse_x, mouse_y = love.mouse.getPosition()
+  local mouse_x = love.mouse.getX() / sx
+  local mouse_y = love.mouse.getY() / sy
 
   if mouse_x >= self.rectangle_x and mouse_x <= self.rectangle_x + self.icon_width and
      mouse_y >= self.rectangle_y and mouse_y <= self.rectangle_y + self.icon_height then
@@ -41,11 +42,11 @@ function ClassSelectorIcon:update(dt)
       self.selected = true
 
       self.resize_animation = self.timer:tween(0.15, self, {
-        icon_width = 125,
-        icon_height = 125,
-        rectangle_x = self.x - 125/2,
-        rectangle_y = self.y - 125/2,
-        text_y = self.y - 125/2 + 135
+        icon_width = 75,
+        icon_height = 75,
+        rectangle_x = self.x - 75/2,
+        rectangle_y = self.y - 75/2,
+        text_y = self.y - 75/2 + 75 + 10
       })
     end
 
@@ -60,8 +61,8 @@ function ClassSelectorIcon:update(dt)
     self.timer:cancel(self.resize_animation)
     self.resize_animation = nil
 
-    self.icon_width = 100
-    self.icon_height = 100
+    self.icon_width = 50
+    self.icon_height = 50
     self.rectangle_x = self.x - self.icon_width/2
     self.rectangle_y = self.y - self.icon_height/2
     self.text_y = self.rectangle_y + self.icon_height + 10
