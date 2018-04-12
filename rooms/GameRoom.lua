@@ -67,7 +67,6 @@ function GameRoom:update(dt)
   self.area:update(dt)
   self.timer:update(dt)
   self.coordinator:update(dt)
-  self.map:update(dt)
 
   if self.player then
     local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
@@ -81,6 +80,8 @@ function GameRoom:update(dt)
       self.cam_player_y_max
     )
   end
+
+  self.map:update(dt)
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
