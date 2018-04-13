@@ -1,5 +1,5 @@
-gw = 480
-gh = 270
+gw = 640
+gh = 360
 gscale = 2
 sx, sy = 1, 1
 slow_amount = 1

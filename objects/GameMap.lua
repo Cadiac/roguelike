@@ -8,8 +8,8 @@ function GameMap:new(game, file_name)
   self.map = sti(
     self.file_name,
     nil,
-    gw/4 - self.tile_size/2,
-    gh/4 - self.tile_size/2
+    (gw/2)/sx - self.tile_size/sx,
+    (gh/2)/sy - self.tile_size/sy
   )
 
   for k, object in pairs(self.map.objects) do
