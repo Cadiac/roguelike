@@ -88,7 +88,6 @@ end
 function Player:draw()
   love.graphics.setColor(hp_color)
   love.graphics.circle('fill', self.x, self.y, self.w)
-  love.graphics.setColor(hp_color)
   love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*self.w, self.r))
 
   if drawDebug then love.graphics.line(self.x, self.y, coordsInDirection(self.x, self.y, 2*gw, self.r)) end

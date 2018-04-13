@@ -10,7 +10,7 @@ function Skill:new()
   self.mana_cost = 10
   self.damage = 10
   self.icon = love.graphics.newImage('resources/sprites/skill_poisondart_icon.png')
-  self.color = default_color
+  self.color = {255, 255, 255}
 end
 
 function Skill:destroy()

@@ -129,7 +129,7 @@ function love.draw()
   if current_room and current_room.room then current_room.room:draw() end
   -- Flash damage indicator
   if flash_frames then
-    love.graphics.setColor(1, 0, 0, 0.5)
+    love.graphics.setColor(255, 0, 0, 128)
     love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
     love.graphics.setColor(default_color)
   end
