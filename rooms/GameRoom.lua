@@ -37,6 +37,8 @@ function GameRoom:new(player_class)
   -- create light
   self.lightMouse = self.lightWorld:newLight(0, 0, 255, 127, 63, 300)
   self.lightMouse:setGlowStrength(0.3)
+
+  self.circleTest = self.lightWorld:newCircle(self.player.x, self.player.y, 16)
 end
 
 function GameRoom:destroy()
@@ -49,12 +51,20 @@ function GameRoom:update(dt)
   self.timer:update(dt)
   self.coordinator:update(dt)
 
-  local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
+	if love.keyboard.isDown("o") then
+		zoom = zoom - 1 * dt
+	elseif love.keyboard.isDown("p") then
+		zoom = zoom + 1 * dt
+	end
+
+  camera:zoomTo(zoom)
+
+  local mouse_x, mouse_y = camera:getMousePosition(sx * camera.scale, sy * camera.scale)
 
   if self.player then
     camera:lockWindow(dt,
-      (self.player.x + self.player.x + mouse_x) / 3,
-      (self.player.y + self.player.y + mouse_y) / 3,
+      ((self.player.x + self.player.x + mouse_x) / 3),
+      ((self.player.y + self.player.y + mouse_y) / 3),
       self.cam_player_x_min,
       self.cam_player_x_max,
       self.cam_player_y_min,
@@ -62,25 +72,25 @@ function GameRoom:update(dt)
     )
   end
 
-  self.lightMouse:setPosition(mouse_x, mouse_y, 1)
+  self.lightMouse:setPosition(mouse_x / zoom, mouse_y / zoom, gscale)
 
   self.map:update(dt)
   self.lightWorld:update(dt)
-  self.lightWorld:setTranslation(-camera.x + gw/2, -camera.y + gh/2, gscale)
+  self.lightWorld:setTranslation(-camera.x + gw/2, -camera.y + gh/2, gscale * zoom)
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
 
 function GameRoom:draw()
-  -- love.graphics.setCanvas(self.main_canvas)
-  -- love.graphics.clear()
+  self.map:draw()
   camera:attach(0, 0, gw, gh)
-  -- This changes the canvas we're drawing on :(
-  self.lightWorld:draw(function()
+    -- self.lightWorld:draw(function()
     love.graphics.setColor(255, 255, 255)
-    self.map:draw()
+    local cx, cy = self.circleTest:getPosition()
+    love.graphics.circle("fill", cx, cy, self.circleTest:getRadius())
+
     self.area:draw()
-  end)
+    -- end)
   camera:detach()
 
   if self.player then GameHUD(self.player) end
@@ -101,8 +111,8 @@ function GameRoom:finish()
 end
 
 function GameRoom:spawnPlayer(x, y)
-  print('Spawning player at ', x * sx, y * sy)
-  self.player = self.area:addGameObject(self.player_class, x * sx, y * sy)
+  print('Spawning player at ', x, y)
+  self.player = self.area:addGameObject(self.player_class, x, y)
   camera:lookAt(self.player.x, self.player.y)
 end
 

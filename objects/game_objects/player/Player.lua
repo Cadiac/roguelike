@@ -41,7 +41,7 @@ function Player:update(dt)
   Player.super.update(self, dt)
 
   -- Mouse coordinates are scaled
-  local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
+  local mouse_x, mouse_y = camera:getMousePosition(sx * camera.scale, sy * camera.scale)
   self.r = angleTowardsCoords(self.x, self.y, mouse_x, mouse_y)
 
   self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)

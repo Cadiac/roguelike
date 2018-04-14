@@ -3,13 +3,9 @@ GameMap = Object:extend()
 function GameMap:new(game, file_name)
   self.depth = 10
   self.game = game
-  self.tile_size = 16
   self.file_name = file_name or 'resources/sprites/dungeon.lua'
   self.map = sti(
-    self.file_name,
-    nil,
-    (gw/2)/sx - self.tile_size/sx,
-    (gh/2)/sy - self.tile_size/sy
+    self.file_name
   )
 
   for k, object in pairs(self.map.objects) do
@@ -40,15 +36,20 @@ function GameMap:update(dt)
 end
 
 function GameMap:draw()
-  self.map:draw(-camera.x / sx, -camera.y / sy, sx, gscale)
+  self.map:draw(
+    -camera.x + (gw/2) / camera.scale - self.map.tilewidth,
+    -camera.y + (gh/2) / camera.scale - self.map.tileheight,
+    camera.scale,
+    camera.scale
+  )
 end
 
 function GameMap:spawn_thin_wall(x, y, width, height)
   local wall = self.game.area.world:newLineCollider(
-    x * sx - self.tile_size,
-    y * sy - self.tile_size,
-    (x + width) * sx - self.tile_size,
-    (y + height) * sy - self.tile_size
+    x - self.map.tilewidth,
+    y - self.map.tileheight,
+    (x + width) - self.map.tilewidth,
+    (y + height) - self.map.tileheight
   )
   wall:setCollisionClass('Solid')
   wall:setType('static')
@@ -58,10 +59,10 @@ end
 
 function GameMap:spawn_wall(x, y, width, height)
   local wall = self.game.area.world:newRectangleCollider(
-    x * sx - self.tile_size,
-    y * sy - self.tile_size,
-    width * sx,
-    height * sy
+    x - self.map.tilewidth,
+    y - self.map.tileheight,
+    width,
+    height
   )
   wall:setCollisionClass('Solid')
   wall:setType('static')
@@ -72,8 +73,8 @@ end
 function GameMap:spawn_destructible(x, y, width, height)
   local destructible = self.game.area:addGameObject(
     'DestructibleObject',
-    x * sx - self.tile_size,
-    y * sy - self.tile_size,
+    x - self.map.tilewidth,
+    y - self.map.tileheight,
     {
       width = width,
       height = height,
