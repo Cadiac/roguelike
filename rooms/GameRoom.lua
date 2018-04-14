@@ -20,7 +20,6 @@ function GameRoom:new(player_class)
   self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile'}})
 
   camera.smoother = Camera.smooth.damped(20)
-  camera.scale = 1
 
   self.cam_player_x_min = love.graphics.getWidth()*0.45
   self.cam_player_y_min = love.graphics.getHeight()*0.45
@@ -29,6 +28,15 @@ function GameRoom:new(player_class)
 
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
+
+  self.lightWorld = LightWorld({
+    ambient = {55,55,55},
+    shadowBlur = 0.0
+  })
+
+  -- create light
+  self.lightMouse = self.lightWorld:newLight(0, 0, 255, 127, 63, 300)
+  self.lightMouse:setGlowStrength(0.3)
 end
 
 function GameRoom:destroy()
@@ -41,9 +49,9 @@ function GameRoom:update(dt)
   self.timer:update(dt)
   self.coordinator:update(dt)
 
-  if self.player then
-    local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
+  local mouse_x, mouse_y = camera:getMousePosition(sx, sy)
 
+  if self.player then
     camera:lockWindow(dt,
       (self.player.x + self.player.x + mouse_x) / 3,
       (self.player.y + self.player.y + mouse_y) / 3,
@@ -54,27 +62,35 @@ function GameRoom:update(dt)
     )
   end
 
+  self.lightMouse:setPosition(mouse_x, mouse_y, 1)
+
   self.map:update(dt)
+  self.lightWorld:update(dt)
+  self.lightWorld:setTranslation(-camera.x + gw/2, -camera.y + gh/2, gscale)
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
 
 function GameRoom:draw()
-  love.graphics.setCanvas(self.main_canvas)
-  love.graphics.clear()
-    camera:attach(0, 0, gw, gh)
+  -- love.graphics.setCanvas(self.main_canvas)
+  -- love.graphics.clear()
+  camera:attach(0, 0, gw, gh)
+  -- This changes the canvas we're drawing on :(
+  self.lightWorld:draw(function()
+    love.graphics.setColor(255, 255, 255)
     self.map:draw()
     self.area:draw()
-    camera:detach()
+  end)
+  camera:detach()
 
-    if self.player then GameHUD(self.player) end
-    if self.show_endscreen and self.endscreen_object then self.endscreen_object:draw() end
-  love.graphics.setCanvas()
+  if self.player then GameHUD(self.player) end
+  if self.show_endscreen and self.endscreen_object then self.endscreen_object:draw() end
+  -- love.graphics.setCanvas()
 
-  love.graphics.setColor(default_color)
-  love.graphics.setBlendMode('alpha', 'premultiplied')
-  love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
-  love.graphics.setBlendMode('alpha')
+  -- love.graphics.setColor(default_color)
+  -- love.graphics.setBlendMode('alpha', 'premultiplied')
+  -- love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
+  -- love.graphics.setBlendMode('alpha')
 end
 
 function GameRoom:finish()

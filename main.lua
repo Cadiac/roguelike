@@ -5,6 +5,7 @@ Camera = require 'libraries/hump/camera'
 fn = require 'libraries/moses/moses'
 Physics = require 'libraries/windfield/windfield'
 sti = require 'libraries/sti/sti'
+LightWorld = require 'libraries/light_world/lib'
 
 require 'globals'
 require 'GameObject'

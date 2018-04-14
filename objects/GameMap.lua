@@ -40,7 +40,7 @@ function GameMap:update(dt)
 end
 
 function GameMap:draw()
-  self.map:draw(-camera.x / sx, -camera.y / sy, sx, sy)
+  self.map:draw(-camera.x / sx, -camera.y / sy, sx, gscale)
 end
 
 function GameMap:spawn_thin_wall(x, y, width, height)

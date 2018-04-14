@@ -1,6 +1,6 @@
-gw = 640
-gh = 360
-gscale = 2
+gw = 1280
+gh = 720
+gscale = 1
 sx, sy = 1, 1
 slow_amount = 1
 flash_frames = false
