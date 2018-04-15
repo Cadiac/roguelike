@@ -85,3 +85,12 @@ function Area:getClosestObject(x, y, radius, object_types)
   end)
   return objects[1]
 end
+
+function Area:addLightWorld()
+  self.light_world = LightWorld({
+    ambient = {55,55,55},
+    shadowBlur = 0.0,
+    refractionStrength = 32.0,
+    reflectionVisibility = 0.75,
+  })
+end

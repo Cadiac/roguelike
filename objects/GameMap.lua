@@ -37,8 +37,8 @@ end
 
 function GameMap:draw()
   self.map:draw(
-    -camera.x + (gw/2) / camera.scale - self.map.tilewidth,
-    -camera.y + (gh/2) / camera.scale - self.map.tileheight,
+    math.floor(-camera.x + (gw/2) / camera.scale - self.map.tilewidth),
+    math.floor(-camera.y + (gh/2) / camera.scale - self.map.tileheight),
     camera.scale,
     camera.scale
   )

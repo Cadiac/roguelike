@@ -3,6 +3,7 @@ local GameRoom = Object:extend()
 function GameRoom:new(player_class)
   self.area = Area()
   self.area:addPhysicsWorld()
+  self.area:addLightWorld()
 
   self.font = fonts.VT323_16
 
@@ -29,16 +30,17 @@ function GameRoom:new(player_class)
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
 
-  self.lightWorld = LightWorld({
-    ambient = {55,55,55},
-    shadowBlur = 0.0
-  })
-
   -- create light
-  self.lightMouse = self.lightWorld:newLight(0, 0, 255, 127, 63, 300)
+  self.lightMouse = self.area.light_world:newLight(0, 0, 255, 127, 63, 300)
   self.lightMouse:setGlowStrength(0.3)
 
-  self.circleTest = self.lightWorld:newCircle(self.player.x, self.player.y, 16)
+  self.circleTest = self.area.light_world:newCircle(self.player.x, self.player.y, 6)
+
+  -- Debug purposes
+  self.area.light_world:newCircle(self.player.x - 100, self.player.y, 6)
+  self.area.light_world:newCircle(self.player.x + 100, self.player.y, 6)
+  self.area.light_world:newCircle(self.player.x, self.player.y - 100, 6)
+  self.area.light_world:newCircle(self.player.x, self.player.y + 100, 6)
 end
 
 function GameRoom:destroy()
@@ -72,25 +74,45 @@ function GameRoom:update(dt)
     )
   end
 
-  self.lightMouse:setPosition(mouse_x / zoom, mouse_y / zoom, gscale)
+  -- local cx, cy = camera:getCameraCoords(mouse_x, mouse_y)
+  self.lightMouse:setPosition(
+    mouse_x,
+    mouse_y
+  )
+
+  -- local px, py = camera:getCameraCoords(
+  --   self.player.x,
+  --   self.player.y
+  -- )
+
+  self.circleTest:setPosition(
+    self.player.x,
+    self.player.y
+  )
+
+  -- local cmx, cmy = camera:getCameraCoords(camera.x, camera.y)
 
   self.map:update(dt)
-  self.lightWorld:update(dt)
-  self.lightWorld:setTranslation(-camera.x + gw/2, -camera.y + gh/2, gscale * zoom)
+  self.area.light_world:update(dt)
+  self.area.light_world:setTranslation(
+    -camera.x + (gw/2) * camera.scale,
+    -camera.y + (gh/2) * camera.scale,
+    camera.scale
+  )
 
   if self.show_endscreen and self.endscreen_object then self.endscreen_object:update(dt) end
 end
 
 function GameRoom:draw()
-  self.map:draw()
-  camera:attach(0, 0, gw, gh)
-    -- self.lightWorld:draw(function()
-    love.graphics.setColor(255, 255, 255)
-    local cx, cy = self.circleTest:getPosition()
-    love.graphics.circle("fill", cx, cy, self.circleTest:getRadius())
+  camera:attach()
+    self.area.light_world:clear()
+    self.area.light_world:draw(function()
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.rectangle("fill", 0, 0, gw, gh)
+      self.map:draw()
+    end)
 
     self.area:draw()
-    -- end)
   camera:detach()
 
   if self.player then GameHUD(self.player) end
