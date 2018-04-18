@@ -6,8 +6,8 @@ function DestructibleObject:new(area, x, y, opts)
 
   self.age = 0
   self.max_age = opts.max_age
-  self.width = (opts.width or 50) * sx
-  self.height = (opts.height or 50) * sy
+  self.width = (opts.width or 50)
+  self.height = (opts.height or 50)
   self.r = opts.r or 0
   self.hp = opts.hp or 1
   self.color = opts.color or default_color
@@ -18,16 +18,18 @@ function DestructibleObject:new(area, x, y, opts)
   self.collider:setAngle(self.r)
   self.x, self.y = self.collider:getPosition()
 
-  self.shadow = self.area.light_world:newRectangle(
-    x + self.width/2,
-    y + self.height/2,
-    self.width,
-    self.height
-  )
+  if opts.shadow then
+    self.shadow = self.area.light_world:newRectangle(
+      x + self.width/2,
+      y + self.height/2,
+      self.width,
+      self.height
+    )
+  end
 end
 
 function DestructibleObject:destroy()
-  self.area.light_world:remove(self.shadow)
+  if self.shadow then self.area.light_world:remove(self.shadow) end
   DestructibleObject.super.destroy(self)
 end
 

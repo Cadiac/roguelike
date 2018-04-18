@@ -17,8 +17,8 @@ function Icewall:effect(area, caster)
 
   area:addGameObject('ShootEffect', start_x, start_y, {parent = caster, distance = 30, color = self.color})
   area:addGameObject('DestructibleObject', start_x, start_y, {
-    width = 10,
-    height = 10,
+    width = 20,
+    height = 20,
     color = self.color,
     r = caster.r,
     hp = 5,
@@ -27,8 +27,8 @@ function Icewall:effect(area, caster)
 
   local x, y = coordsInDirection(start_x, start_y, -20, caster.r + math.pi/2)
   area:addGameObject('DestructibleObject', x, y, {
-    width = 10,
-    height = 10,
+    width = 20,
+    height = 20,
     color = self.color,
     r = caster.r,
     hp = 5,
@@ -37,8 +37,8 @@ function Icewall:effect(area, caster)
 
   local x, y = coordsInDirection(start_x, start_y, -40, caster.r + math.pi/2)
   area:addGameObject('DestructibleObject', x, y, {
-    width = 10,
-    height = 10,
+    width = 20,
+    height = 20,
     color = self.color,
     r = caster.r,
     hp = 5,
@@ -47,8 +47,8 @@ function Icewall:effect(area, caster)
 
   local x, y = coordsInDirection(start_x, start_y, 20, caster.r + math.pi/2)
   area:addGameObject('DestructibleObject', x, y, {
-    width = 10,
-    height = 10,
+    width = 20,
+    height = 20,
     color = self.color,
     r = caster.r,
     hp = 5,
@@ -57,8 +57,8 @@ function Icewall:effect(area, caster)
 
   local x, y = coordsInDirection(start_x, start_y, 40, caster.r + math.pi/2)
   area:addGameObject('DestructibleObject', x, y, {
-    width = 10,
-    height = 10,
+    width = 20,
+    height = 20,
     color = self.color,
     r = caster.r,
     hp = 5,
