@@ -4,9 +4,8 @@ function GameMap:new(game, file_name)
   self.depth = 10
   self.game = game
   self.file_name = file_name or 'resources/sprites/dungeon.lua'
-  self.map = sti(
-    self.file_name
-  )
+  self.tile_size = 16
+  self.map = sti.new(self.file_name, nil, -self.tile_size, -self.tile_size)
 
   for k, object in pairs(self.map.objects) do
     if object.name == 'player' then
@@ -36,12 +35,13 @@ function GameMap:update(dt)
 end
 
 function GameMap:draw()
-  self.map:draw(
-    math.floor(-camera.x + (gw/2) / camera.scale - self.map.tilewidth),
-    math.floor(-camera.y + (gh/2) / camera.scale - self.map.tileheight),
-    camera.scale,
-    camera.scale
-  )
+  -- self.map:draw(
+  --   math.floor(-camera.x + (gw/2) / camera.scale - self.map.tilewidth),
+  --   math.floor(-camera.y + (gh/2) / camera.scale - self.map.tileheight),
+  --   camera.scale,
+  --   camera.scale
+  -- )
+  self.map:draw()
 end
 
 function GameMap:spawn_thin_wall(x, y, width, height)

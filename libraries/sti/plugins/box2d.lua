@@ -1,20 +1,18 @@
 --- Box2D plugin for STI
 -- @module box2d
 -- @author Landon Manning
--- @copyright 2017
+-- @copyright 2015
 -- @license MIT/X11
-
-local utils = require((...):gsub('plugins.box2d', 'utils'))
-local lg    = require((...):gsub('plugins.box2d', 'graphics'))
 
 return {
 	box2d_LICENSE     = "MIT/X11",
 	box2d_URL         = "https://github.com/karai17/Simple-Tiled-Implementation",
-	box2d_VERSION     = "2.3.2.6",
+	box2d_VERSION     = "2.3.2.1",
 	box2d_DESCRIPTION = "Box2D hooks for STI.",
 
 	--- Initialize Box2D physics world.
 	-- @param world The Box2D world to add objects to.
+	-- @return nil
 	box2d_init = function(map, world)
 		assert(love.physics, "To use the Box2D plugin, please enable the love.physics module.")
 
@@ -23,36 +21,100 @@ return {
 			body = body,
 		}
 
+		local function convertEllipseToPolygon(x, y, w, h, max_segments)
+			local function calc_segments(segments)
+				local function vdist(a, b)
+					local c = {
+						x = a.x - b.x,
+						y = a.y - b.y,
+					}
+
+					return c.x * c.x + c.y * c.y
+				end
+
+				segments = segments or 64
+				local vertices = {}
+
+				local v = { 1, 2, math.ceil(segments/4-1), math.ceil(segments/4) }
+
+				local m
+				if love.physics then
+					m = love.physics.getMeter()
+				else
+					m = 32
+				end
+
+				for _, i in ipairs(v) do
+					local angle = (i / segments) * math.pi * 2
+					local px    = x + w / 2 + math.cos(angle) * w / 2
+					local py    = y + h / 2 + math.sin(angle) * h / 2
+
+					table.insert(vertices, { x = px / m, y = py / m })
+				end
+
+				local dist1 = vdist(vertices[1], vertices[2])
+				local dist2 = vdist(vertices[3], vertices[4])
+
+				-- Box2D threshold
+				if dist1 < 0.0025 or dist2 < 0.0025 then
+					return calc_segments(segments-2)
+				end
+
+				return segments
+			end
+
+			local segments = calc_segments(max_segments)
+			local vertices = {}
+
+			table.insert(vertices, { x = x + w / 2, y = y + h / 2 })
+
+			for i=0, segments do
+				local angle = (i / segments) * math.pi * 2
+				local px    = x + w / 2 + math.cos(angle) * w / 2
+				local py    = y + h / 2 + math.sin(angle) * h / 2
+
+				table.insert(vertices, { x = px, y = py })
+			end
+
+			return vertices
+		end
+
+		local function rotateVertex(v, x, y, cos, sin, oy)
+			oy = oy or 0
+
+			local vertex = {
+				x = v.x,
+				y = v.y - oy,
+			}
+
+			vertex.x = vertex.x - x
+			vertex.y = vertex.y - y
+
+			local vx = cos * vertex.x - sin * vertex.y
+			local vy = sin * vertex.x + cos * vertex.y
+
+			return vx + x, vy + y + oy
+		end
+
 		local function addObjectToWorld(objshape, vertices, userdata, object)
 			local shape
 
 			if objshape == "polyline" then
-				if #vertices == 4 then
-					shape = love.physics.newEdgeShape(unpack(vertices))
-				else
-					shape = love.physics.newChainShape(false, unpack(vertices))
-				end
+				shape = love.physics.newChainShape(false, unpack(vertices))
 			else
 				shape = love.physics.newPolygonShape(unpack(vertices))
 			end
 
-			local currentBody = body
-
-			if userdata.properties.dynamic == true then
-				currentBody = love.physics.newBody(world, map.offsetx, map.offsety, 'dynamic')
-			end
-
-			local fixture = love.physics.newFixture(currentBody, shape)
+			local fixture = love.physics.newFixture(body, shape)
 
 			fixture:setUserData(userdata)
 
-			if userdata.properties.sensor == true then
+			if userdata.properties.sensor == "true" then
 				fixture:setSensor(true)
 			end
 
 			local obj = {
 				object  = object,
-				body = currentBody,
 				shape   = shape,
 				fixture = fixture,
 			}
@@ -73,8 +135,8 @@ return {
 		local function calculateObjectPosition(object, tile)
 			local o = {
 				shape   = object.shape,
-				x       = (object.dx or object.x) + map.offsetx,
-				y       = (object.dy or object.y) + map.offsety,
+				x       = object.dx or object.x,
+				y       = object.dy or object.y,
 				w       = object.width,
 				h       = object.height,
 				polygon = object.polygon or object.polyline or object.ellipse or object.rectangle
@@ -94,21 +156,21 @@ return {
 				if object.gid then
 					local tileset = map.tilesets[map.tiles[object.gid].tileset]
 					local lid     = object.gid - tileset.firstgid
-					local t       = {}
+					local tile    = {}
 
 					-- This fixes a height issue
 					 o.y = o.y + map.tiles[object.gid].offset.y
 					 oy  = tileset.tileheight
 
-					for _, tt in ipairs(tileset.tiles) do
-						if tt.id == lid then
-							t = tt
+					for _, t in ipairs(tileset.tiles) do
+						if t.id == lid then
+							tile = t
 							break
 						end
 					end
 
-					if t.objectGroup then
-						for _, obj in ipairs(t.objectGroup.objects) do
+					if tile.objectGroup then
+						for _, obj in ipairs(tile.objectGroup.objects) do
 							-- Every object in the tile
 							calculateObjectPosition(obj, object)
 						end
@@ -124,18 +186,22 @@ return {
 					{ x=o.x+0,   y=o.y+0   },
 					{ x=o.x+o.w, y=o.y+0   },
 					{ x=o.x+o.w, y=o.y+o.h },
-					{ x=o.x+0,   y=o.y+o.h }
+					{ x=o.x+0,   y=o.y+o.h },
 				}
 
 				for _, vertex in ipairs(o.polygon) do
-					vertex.x, vertex.y = utils.rotate_vertex(map, vertex, o.x, o.y, cos, sin, oy)
+					if map.orientation == "isometric" then
+						vertex.x, vertex.y = map:convertIsometricToScreen(vertex.x, vertex.y)
+					end
+
+					vertex.x, vertex.y = rotateVertex(vertex, o.x, o.y, cos, sin, oy)
 				end
 
 				local vertices = getPolygonVertices(o)
 				addObjectToWorld(o.shape, vertices, userdata, tile or object)
 			elseif o.shape == "ellipse" then
 				if not o.polygon then
-					o.polygon = utils.convert_ellipse_to_polygon(o.x, o.y, o.w, o.h)
+					o.polygon = convertEllipseToPolygon(o.x, o.y, o.w, o.h)
 				end
 				local vertices  = getPolygonVertices(o)
 				local triangles = love.math.triangulate(vertices)
@@ -157,39 +223,40 @@ return {
 		end
 
 		for _, tile in pairs(map.tiles) do
-			if map.tileInstances[tile.gid] then
-				for _, instance in ipairs(map.tileInstances[tile.gid]) do
-					-- Every object in every instance of a tile
-					if tile.objectGroup then
+			local tileset = map.tilesets[tile.tileset]
+
+			-- Every object in every instance of a tile
+			if tile.objectGroup then
+				if map.tileInstances[tile.gid] then
+					for _, instance in ipairs(map.tileInstances[tile.gid]) do
 						for _, object in ipairs(tile.objectGroup.objects) do
-							if object.properties.collidable == true then
-								object.dx = instance.x + object.x
-								object.dy = instance.y + object.y
-								calculateObjectPosition(object, instance)
-							end
+							object.dx = object.x + instance.x
+							object.dy = object.y + instance.y
+							calculateObjectPosition(object, instance)
 						end
 					end
+				end
 
-					-- Every instance of a tile
-					if tile.properties.collidable == true then
-						local object = {
-							shape      = "rectangle",
-							x          = instance.x,
-							y          = instance.y,
-							width      = map.tilewidth,
-							height     = map.tileheight,
-							properties = tile.properties
-						}
+			-- Every instance of a tile
+			elseif tile.properties and tile.properties.collidable == "true" and map.tileInstances[tile.gid] then
+				for _, instance in ipairs(map.tileInstances[tile.gid]) do
+					local object = {
+						shape      = "rectangle",
+						x          = instance.x,
+						y          = instance.y,
+						width      = tileset.tilewidth,
+						height     = tileset.tileheight,
+						properties = tile.properties
+					}
 
-						calculateObjectPosition(object, instance)
-					end
+					calculateObjectPosition(object, instance)
 				end
 			end
 		end
 
 		for _, layer in ipairs(map.layers) do
 			-- Entire layer
-			if layer.properties.collidable == true then
+			if layer.properties.collidable == "true" then
 				if layer.type == "tilelayer" then
 					for gid, tiles in pairs(map.tileInstances) do
 						local tile = map.tiles[gid]
@@ -231,7 +298,7 @@ return {
 			-- Individual objects
 			if layer.type == "objectgroup" then
 				for _, object in ipairs(layer.objects) do
-					if object.properties.collidable == true then
+					if object.properties.collidable == "true" then
 						calculateObjectPosition(object)
 					end
 				end
@@ -243,12 +310,13 @@ return {
 
 	--- Remove Box2D fixtures and shapes from world.
 	-- @param index The index or name of the layer being removed
+	-- @return nil
 	box2d_removeLayer = function(map, index)
 		local layer = assert(map.layers[index], "Layer not found: " .. index)
 		local collision = map.box2d_collision
 
 		-- Remove collision objects
-		for i = #collision, 1, -1 do
+		for i=#collision, 1, -1 do
 			local obj = collision[i]
 
 			if obj.object.layer == layer then
@@ -259,36 +327,23 @@ return {
 	end,
 
 	--- Draw Box2D physics world.
-	-- @param tx Translate on X
-	-- @param ty Translate on Y
-	-- @param sx Scale on X
-	-- @param sy Scale on Y
-	box2d_draw = function(map, tx, ty, sx, sy)
+	-- @return nil
+	box2d_draw = function(map)
 		local collision = map.box2d_collision
 
-		lg.push()
-		lg.scale(sx or 1, sy or sx or 1)
-		lg.translate(math.floor(tx or 0), math.floor(ty or 0))
-
 		for _, obj in ipairs(collision) do
-			local points = {obj.body:getWorldPoints(obj.shape:getPoints())}
-			local shape_type = obj.shape:getType()
+			local points = {collision.body:getWorldPoints(obj.shape:getPoints())}
 
-			if shape_type == "edge" or shape_type == "chain" then
+			if #points == 4 then
 				love.graphics.line(points)
-			elseif shape_type == "polygon" then
-				love.graphics.polygon("line", points)
 			else
-				error("sti box2d plugin does not support "..shape_type.." shapes")
+				love.graphics.polygon("line", points)
 			end
 		end
-
-		lg.pop()
 	end,
 }
 
 --- Custom Properties in Tiled are used to tell this plugin what to do.
 -- @table Properties
--- @field collidable set to true, can be used on any Layer, Tile, or Object
--- @field sensor set to true, can be used on any Tile or Object that is also collidable
--- @field dynamic set to true, can be used on any Tile or Object
+-- @field collidable set to "true", can be used on any Layer, Tile, or Object
+-- @field sensor set to "true", can be used on any Tile or Object that is also collidable

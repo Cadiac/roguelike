@@ -4,7 +4,7 @@ Timer = require 'libraries/enhanced_timer/EnhancedTimer'
 Camera = require 'libraries/hump/camera'
 fn = require 'libraries/moses/moses'
 Physics = require 'libraries/windfield/windfield'
-sti = require 'libraries/sti/sti'
+sti = require 'libraries/sti'
 LightWorld = require 'libraries/light_world/lib'
 
 require 'globals'

@@ -95,8 +95,8 @@ function GameRoom:update(dt)
   self.map:update(dt)
   self.area.light_world:update(dt)
   self.area.light_world:setTranslation(
-    -camera.x + (gw/2) * camera.scale,
-    -camera.y + (gh/2) * camera.scale,
+    -camera.x + gw/2 - ((camera.scale - 1) * camera.x),
+    -camera.y + gh/2 - ((camera.scale - 1) * camera.y),
     camera.scale
   )
 
@@ -105,14 +105,12 @@ end
 
 function GameRoom:draw()
   camera:attach()
-    self.area.light_world:clear()
     self.area.light_world:draw(function()
       love.graphics.setColor(255, 255, 255)
       love.graphics.rectangle("fill", 0, 0, gw, gh)
       self.map:draw()
+      self.area:draw()
     end)
-
-    self.area:draw()
   camera:detach()
 
   if self.player then GameHUD(self.player) end

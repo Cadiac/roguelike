@@ -1,80 +1,15 @@
 # Change Log
 
-## 2017-05-18: v0.18.2.1
-
-* Changed: map.draw, map.box2d_draw, and map.bump_draw now take transform arguments. This (finally!) allows both scaling and translating to work together.
-* Fixed: A bug where cached textures were not able to be loaded more than once (thanks @IoriBranford)
-
-## 2017-05-07: v0.18.2.0
-
-* Added: dummy graphics shim for headless mode (thanks @matiasah)
-* Changed: plugins now load using require() (thanks @benwebber)
-* Fixed: typo causing staggered maps to crash (thanks @Drauthius)
-* Fixed: a bug where scaling the map could cause graphical glitches
-* Fixed: transparent colour code
-
-## 2017-02-01: v0.18.1.0
-
-* Added: support for sorting objects
-* Changed: box2d and bump plugins to be explicit when dealing with object groups within tiles
-* Fixed: rendering staggered and hexogonal maps
-* Removed: Map.drawRange was made obselete
-
-## 2017-02-01: v0.16.0.4
-
-* Added: support for passing map table in directly (thanks @prust)
-* Added: support for collision object groups in bump.lua plugin (thanks @DanielPower)
-* Added: support for transparent colour mask (thanks @matiasah)
-* Changed: batch size limit from 100 to default(1000)
-* Changed: drawing layers now inherits colour settings (thanks @josefnpat)
-* Fixed: a leaking global
-
-## 2016-08-22: v0.16.0.3
-
-* Changed: box2d_draw plugin now uses correct shape (thanks @buckle2000)
-* Fixed: a collision offset issue in bump_draw (thanks @rosshadden)
-* Fixed: a bug where drawing multiple maps didn't always work properly
-
-## 2016-07-18: v0.16.0.2
-
-* Added: busted tests!
-* Changed: structure of git repo is now more user friendly
-* Changed: converted map.lua into init.lua and changed isolation code
-* Changed: STI.new() -> STI()
-* Changed: Map:convertWorldToScreen -> Map:convertTileToPixel
-* Changed: Map:convertScreenToWorld -> Map:convertPixelToTile
-* Fixed: hexagonal maps now display in correct location (thanks @bjorn)
-
-## 2016-06-09: v0.16.0.1
-
-* Changed: moved local functions to an internal utils file to tidy things up
-* Changed: Box2D plugin now uses utils file instead of duplicate functions
-
-## 2016-06-09: v0.16.0.0
-
-* Changed: Custom Properties now support proper boolean values in both Box2D and Bump plugins
-
-## 2016-06-09: v0.14.2.0
-
-* Added: proper support for Layer offsets (thanks @Drauthius!)
-
-## 2016-05-19: v0.14.1.13
-
-* Added: test maps for visual varification between Tiled and STI
-* Added: Map:swapTile so you can cleanly swap tiles in Tile Layers
-* Changed: all conversion functions consolidated into two functions (thanks @entrancejew)
-* Fixed: shapes were off in noman's land in some cases (thanks @loribranford)
-
 ## 2016-01-12: v0.14.1.12
 
-* Added: basic support for object layers in Bump plugin (thanks @premek)
-* Changed: new line token from CRLF to LF
-* Fixed: sprite batches should now respect the map draw order
+* Added: Basic support for object layers in Bump plugin (thanks @premek)
+* Changed: New line token from CRLF to LF
+* Fixed: Sprite batches should now respect the map draw order
 
 ## 2016-01-01: v0.14.1.11
 
-* Fixed: various bugs in the Box2D plugin (thanks @ChrisWeisiger)
-* Fixed: various bugs in the Bump plugin (thanks @bobbyjoness)
+* Fixed: Various bugs in the Box2D plugin (thanks @ChrisWeisiger)
+* Fixed: Various bugs in the Bump plugin (thanks @bobbyjoness)
 
 ## 2015-12-31: v0.14.1.10
 

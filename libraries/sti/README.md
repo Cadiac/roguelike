@@ -1,15 +1,11 @@
 # Simple Tiled Implementation
 
-[![Join the chat at https://gitter.im/karai17/Simple-Tiled-Implementation](https://badges.gitter.im/karai17/Simple-Tiled-Implementation.svg)](https://gitter.im/karai17/Simple-Tiled-Implementation?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-If you like STI, consider tossing me a few monies via [**PayPal**][paypal].
-
-Simple Tiled Implementation is a [**Tiled**][Tiled] map loader and renderer designed for the *awesome* [**LÖVE**][LOVE] framework. Please read the [**documentation**][dox] to learn how it works, or check out this handy [**tutorial**][tut] I wrote! The tutorial might be a bit out of date so be sure to check the documentation if there are any issues.
+Simple Tiled Implementation is a [**Tiled**][Tiled] map loader and renderer designed for the **\*awesome\*** [**LÖVE**][LOVE] framework. Please read the [**documentation**][dox] to learn how it works!
 
 ## Quick Example
 
 ```lua
--- This example uses the included Box2D (love.physics) plugin!!
+-- This example uses the default Box2D (love.physics) plugin!!
 
 local sti = require "sti"
 
@@ -22,7 +18,7 @@ function love.load()
 	love.physics.setMeter(32)
 
 	-- Load a map exported to Lua from Tiled
-	map = sti("assets/maps/map01.lua", { "box2d" })
+	map = sti.new("assets/maps/map01.lua", { "box2d" })
 
 	-- Prepare physics world with horizontal and vertical gravity
 	world = love.physics.newWorld(0, 0)
@@ -67,23 +63,28 @@ function love.update(dt)
 end
 
 function love.draw()
+	-- Translation would normally be based on a player's x/y
+	local translateX = 0
+	local translateY = 0
+
+	-- Draw Range culls unnecessary tiles
+	map:setDrawRange(-translateX, -translateY, windowWidth, windowHeight)
+
 	-- Draw the map and all objects within
-	love.graphics.setColor(255, 255, 255)
 	map:draw()
 
 	-- Draw Collision Map (useful for debugging)
-	love.graphics.setColor(255, 0, 0)
+	love.graphics.setColor(255, 0, 0, 255)
 	map:box2d_draw()
 
-	-- Please note that map:draw, map:box2d_draw, and map:bump_draw take
-	-- translate and scale arguments (tx, ty, sx, sy) for when you want to
-	-- grow, shrink, or reposition your map on screen.
+	-- Reset color
+	love.graphics.setColor(255, 255, 255, 255)
 end
 ```
 
 ## Requirements
 
-This library recommends LÖVE 11.0 and Tiled 0.18. If you are updating from an older version of Tiled, please re-export your Lua map files.
+This library recommends LÖVE 0.9.2 or 0.10.0 and Tiled 0.14.1. If you are updating from an older version of Tiled, please re-export your Lua map files.
 
 ## License
 
@@ -92,6 +93,4 @@ This code is licensed under the [**MIT/X11 Open Source License**][MIT]. Check ou
 [Tiled]: http://www.mapeditor.org/
 [LOVE]: https://www.love2d.org/
 [dox]: http://karai17.github.io/Simple-Tiled-Implementation/
-[tut]: http://lua.space/gamedev/using-tiled-maps-in-love
 [MIT]: http://www.opensource.org/licenses/mit-license.html
-[paypal]: https://www.paypal.me/LandonManning
