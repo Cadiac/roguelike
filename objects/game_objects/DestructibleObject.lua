@@ -17,9 +17,17 @@ function DestructibleObject:new(area, x, y, opts)
   self.collider:setType('static')
   self.collider:setAngle(self.r)
   self.x, self.y = self.collider:getPosition()
+
+  self.shadow = self.area.light_world:newRectangle(
+    x + self.width/2,
+    y + self.height/2,
+    self.width,
+    self.height
+  )
 end
 
 function DestructibleObject:destroy()
+  self.area.light_world:remove(self.shadow)
   DestructibleObject.super.destroy(self)
 end
 

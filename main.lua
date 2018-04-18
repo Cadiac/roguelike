@@ -60,7 +60,7 @@ local available_rooms = {
 
 fonts = {}
 
-drawDebug = true
+drawDebug = false
 
 function love.load()
   input = Input()

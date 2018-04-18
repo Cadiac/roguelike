@@ -54,6 +54,23 @@ function GameMap:spawn_thin_wall(x, y, width, height)
   wall:setCollisionClass('Solid')
   wall:setType('static')
 
+
+  if width == 0 then
+    self.game.area.light_world:newRectangle(
+      x - self.map.tilewidth + width/2,
+      y - self.map.tileheight + height/2,
+      1,
+      height
+    )
+  elseif height == 0 then
+    self.game.area.light_world:newRectangle(
+      x - self.map.tilewidth + width/2,
+      y - self.map.tileheight + height/2,
+      width,
+      1
+    )
+  end
+
   return wall
 end
 
@@ -66,6 +83,13 @@ function GameMap:spawn_wall(x, y, width, height)
   )
   wall:setCollisionClass('Solid')
   wall:setType('static')
+
+  self.game.area.light_world:newRectangle(
+    x - self.map.tilewidth + width/2,
+    y - self.map.tileheight + height/2,
+    width,
+    height
+  )
 
   return wall
 end
@@ -82,4 +106,6 @@ function GameMap:spawn_destructible(x, y, width, height)
       hp = 3,
     }
   )
+
+  return destructible
 end

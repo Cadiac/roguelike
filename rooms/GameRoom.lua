@@ -31,16 +31,14 @@ function GameRoom:new(player_class)
   self.map = GameMap(self)
 
   -- create light
-  self.lightMouse = self.area.light_world:newLight(0, 0, 255, 127, 63, 300)
-  self.lightMouse:setGlowStrength(0.3)
-
-  self.circleTest = self.area.light_world:newCircle(self.player.x, self.player.y, 6)
+  self.player_light = self.area.light_world:newLight(self.player.x, self.player.y, 255, 127, 63, 300)
+  self.player_light:setGlowStrength(0.3)
 
   -- Debug purposes
-  self.area.light_world:newCircle(self.player.x - 100, self.player.y, 6)
-  self.area.light_world:newCircle(self.player.x + 100, self.player.y, 6)
-  self.area.light_world:newCircle(self.player.x, self.player.y - 100, 6)
-  self.area.light_world:newCircle(self.player.x, self.player.y + 100, 6)
+  -- self.area.light_world:newCircle(self.player.x - 100, self.player.y, 6)
+  -- self.area.light_world:newCircle(self.player.x + 100, self.player.y, 6)
+  -- self.area.light_world:newCircle(self.player.x, self.player.y - 100, 6)
+  -- self.area.light_world:newCircle(self.player.x, self.player.y + 100, 6)
 end
 
 function GameRoom:destroy()
@@ -74,23 +72,10 @@ function GameRoom:update(dt)
     )
   end
 
-  -- local cx, cy = camera:getCameraCoords(mouse_x, mouse_y)
-  self.lightMouse:setPosition(
-    mouse_x,
-    mouse_y
-  )
-
-  -- local px, py = camera:getCameraCoords(
-  --   self.player.x,
-  --   self.player.y
-  -- )
-
-  self.circleTest:setPosition(
+  self.player_light:setPosition(
     self.player.x,
     self.player.y
   )
-
-  -- local cmx, cmy = camera:getCameraCoords(camera.x, camera.y)
 
   self.map:update(dt)
   self.area.light_world:update(dt)
