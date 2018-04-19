@@ -90,7 +90,5 @@ function Area:addLightWorld()
   self.light_world = LightWorld({
     ambient = {0, 0, 0},
     shadowBlur = 0.0,
-    refractionStrength = 32.0,
-    reflectionVisibility = 0.75,
   })
 end

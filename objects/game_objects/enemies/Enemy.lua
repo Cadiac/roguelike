@@ -73,7 +73,7 @@ function Enemy:update(dt)
       --   if not self.passive then skill:cast(self.area, self, self.x, self.y, self.r) end
       -- end
 
-      -- -- Track players
+      -- Track players
       -- self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
       -- self.collider:setLinearVelocity(self.vx, self.vy)
 

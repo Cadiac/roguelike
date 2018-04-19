@@ -3,23 +3,33 @@ GameMap = Object:extend()
 function GameMap:new(game, file_name)
   self.depth = 10
   self.game = game
+  self.timer = Timer()
+
   self.file_name = file_name or 'resources/sprites/dungeon.lua'
   self.tile_size = 16
   self.map = sti.new(self.file_name, nil, -self.tile_size, -self.tile_size)
 
   for k, object in pairs(self.map.objects) do
-    if object.name == 'player' then
+    if object.type == 'Player' then
       self.game:spawnPlayer(object.x, object.y)
-    elseif object.name == 'wall' then
+    elseif object.type == 'Wall' then
       if object.width == 0 or object.height == 0 then
         self:spawn_thin_wall(object.x, object.y, object.width, object.height)
       else
         self:spawn_wall(object.x, object.y, object.width, object.height)
       end
-    elseif object.name == 'destructible' then
+    elseif object.type == 'InvisibleWall' then
+      if object.width == 0 or object.height == 0 then
+        self:spawn_thin_wall(object.x, object.y, object.width, object.height, true)
+      else
+        self:spawn_wall(object.x, object.y, object.width, object.height, true)
+      end
+    elseif object.type == 'Destructible' then
       self:spawn_destructible(object.x, object.y, object.width, object.height)
-    elseif object.name == 'chest' then
+    elseif object.type == 'Chest' then
       self:spawn_destructible(object.x, object.y, object.width, object.height)
+    elseif object.type == 'Light' then
+      self:spawn_light(object.x, object.y)
     else
       print('Unknown object ' .. object.name .. ' at map ' .. file_name)
     end
@@ -30,7 +40,12 @@ function GameMap:new(game, file_name)
   self.map:removeLayer("Walls")
 end
 
+function GameMap:destroy()
+  if self.timer then self.timer:destroy() end
+end
+
 function GameMap:update(dt)
+  if self.timer then self.timer:update(dt) end
   self.map:update(dt)
 end
 
@@ -44,7 +59,7 @@ function GameMap:draw()
   self.map:draw()
 end
 
-function GameMap:spawn_thin_wall(x, y, width, height)
+function GameMap:spawn_thin_wall(x, y, width, height, invisible)
   local wall = self.game.area.world:newLineCollider(
     x - self.map.tilewidth,
     y - self.map.tileheight,
@@ -55,26 +70,28 @@ function GameMap:spawn_thin_wall(x, y, width, height)
   wall:setType('static')
 
 
-  if width == 0 then
-    self.game.area.light_world:newRectangle(
-      x - self.map.tilewidth + width/2,
-      y - self.map.tileheight + height/2,
-      1,
-      height
-    )
-  elseif height == 0 then
-    self.game.area.light_world:newRectangle(
-      x - self.map.tilewidth + width/2,
-      y - self.map.tileheight + height/2,
-      width,
-      1
-    )
+  if not invisible then
+    if width == 0 then
+      self.game.area.light_world:newRectangle(
+        x - self.map.tilewidth + width/2,
+        y - self.map.tileheight + height/2,
+        1,
+        height
+      )
+    elseif height == 0 then
+      self.game.area.light_world:newRectangle(
+        x - self.map.tilewidth + width/2,
+        y - self.map.tileheight + height/2,
+        width,
+        1
+      )
+    end
   end
 
   return wall
 end
 
-function GameMap:spawn_wall(x, y, width, height)
+function GameMap:spawn_wall(x, y, width, height, invisible)
   local wall = self.game.area.world:newRectangleCollider(
     x - self.map.tilewidth,
     y - self.map.tileheight,
@@ -84,12 +101,14 @@ function GameMap:spawn_wall(x, y, width, height)
   wall:setCollisionClass('Solid')
   wall:setType('static')
 
-  self.game.area.light_world:newRectangle(
-    x - self.map.tilewidth + width/2,
-    y - self.map.tileheight + height/2,
-    width,
-    height
-  )
+  if not invisible then
+    self.game.area.light_world:newRectangle(
+      x - self.map.tilewidth + width/2,
+      y - self.map.tileheight + height/2,
+      width,
+      height
+    )
+  end
 
   return wall
 end
@@ -108,4 +127,25 @@ function GameMap:spawn_destructible(x, y, width, height)
   )
 
   return destructible
+end
+
+function GameMap:spawn_light(x, y)
+  local light = self.game.area.light_world:newLight(
+    x - self.map.tilewidth,
+    y - self.map.tileheight,
+    255, 64, 28,
+    50
+  )
+
+  -- Flicker
+  self.timer:every(0.5, function()
+    self.timer:tween(
+      random(0.2, 0.3),
+      light,
+      {range = random(95, 105)},
+      'linear'
+    )
+  end)
+
+  return light
 end
