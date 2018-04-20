@@ -53,9 +53,9 @@ function love.update(dt)
 		x = x + dt * 200
 	end
 
-	if love.keyboard.isDown("-") then
+	if love.keyboard.isDown("o") then
 		scale = scale - 0.01
-	elseif love.keyboard.isDown("=") then
+	elseif love.keyboard.isDown("p") then
 		scale = scale + 0.01
 	end
 

@@ -774,19 +774,6 @@ return {
           properties = {}
         },
         {
-          id = 51,
-          name = "wall",
-          type = "Wall",
-          shape = "rectangle",
-          x = 1408,
-          y = 160,
-          width = 0,
-          height = 160,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
           id = 52,
           name = "wall",
           type = "Wall",

@@ -343,7 +343,6 @@
   <object id="48" name="wall" type="Wall" x="1376" y="144" width="16"/>
   <object id="49" name="wall" type="Wall" x="1392" y="144" height="16"/>
   <object id="50" name="wall" type="Wall" x="1392" y="160" width="16"/>
-  <object id="51" name="wall" type="Wall" x="1408" y="160" height="160"/>
   <object id="52" name="wall" type="Wall" x="1392" y="320" width="16"/>
   <object id="53" name="wall" type="Wall" x="1392" y="320" height="16"/>
   <object id="54" name="wall" type="Wall" x="1344" y="336" width="48"/>

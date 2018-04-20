@@ -34,9 +34,9 @@ function love.load()
 	rectangleTest = lightWorld:newRectangle(512, 512, 64, 64)
   local px, py, pw, ph = 100, 200, 20, 50
 	polygonTest = lightWorld:newPolygon(
-    px, py, 
-    px+pw, py, 
-    px+pw, py+ph, 
+    px, py,
+    px+pw, py,
+    px+pw, py+ph,
     px-50, py+ph)
 
 	imageTest = lightWorld:newImage(image, 64, 64, 24, 6)
@@ -104,7 +104,7 @@ function love.update(dt)
 		x = x + dt * 200
 	end
 
-  
+
 	if love.keyboard.isDown("k") then
     polygonTest:move(0, -(dt * 200))
 	elseif love.keyboard.isDown("j") then
@@ -124,15 +124,15 @@ function love.update(dt)
 	if love.keyboard.isDown("s") then
     polygonTest:rotate(0.05)
 	elseif love.keyboard.isDown("d") then
-    polygonTest:rotate(-0.05) 
+    polygonTest:rotate(-0.05)
   end
 
-	if love.keyboard.isDown("-") then
+	if love.keyboard.isDown("o") then
 		scale = scale - 0.01
-	elseif love.keyboard.isDown("=") then
+	elseif love.keyboard.isDown("p") then
 		scale = scale + 0.01
 	end
-                                                                       
+
 	colorAberration = math.max(0.0, colorAberration - dt * 10.0)
 	if colorAberration > 0.0 then
 		lightWorld.post_shader:addEffect("blur", 2.0, 2.0)
