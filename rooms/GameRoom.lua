@@ -30,15 +30,6 @@ function GameRoom:new(player_class)
   self.coordinator = GameCoordinator(self)
   self.map = GameMap(self)
 
-  -- create light
-  self.player_light = self.area.light_world:newLight(
-    self.player.x,
-    self.player.y,
-    255, 127, 63, -- color
-    150 -- range
-  )
-  self.player_light:setGlowStrength(0.3)
-
   -- Debug purposes
   -- self.area.light_world:newCircle(self.player.x - 100, self.player.y, 6)
   -- self.area.light_world:newCircle(self.player.x + 100, self.player.y, 6)
@@ -76,12 +67,6 @@ function GameRoom:update(dt)
       self.cam_player_y_max
     )
   end
-
-  self.player_light:setPosition(
-    self.player.x,
-    self.player.y
-  )
-  self.player_light:setGlowStrength(0.3 / camera.scale)
 
   self.map:update(dt)
   self.area.light_world:update(dt)

@@ -31,6 +31,16 @@ function Player:new(area, x, y, opts)
     ['skill_slot_3'] = Fireball(),
     ['skill_slot_4'] = PoisonDart()
   }
+
+  -- Player light
+  self.vision_range = 150
+  self.player_light = self.area.light_world:newLight(
+    self.x,
+    self.y,
+    255, 127, 63, -- color
+    self.vision_range -- range
+  )
+  self.player_light:setGlowStrength(0.3)
 end
 
 function Player:destroy()
@@ -83,6 +93,12 @@ function Player:update(dt)
       projectile:die()
     end
   end
+
+  self.player_light:setPosition(
+    self.x,
+    self.y
+  )
+  self.player_light:setGlowStrength(0.3 / camera.scale)
 end
 
 function Player:draw()
