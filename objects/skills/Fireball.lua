@@ -26,7 +26,8 @@ function Fireball:effect(area, caster)
       s = 5,
       v = 100,
       damage = self.damage,
-      caster = caster
+      caster = caster,
+      light = true
     }
   )
 end

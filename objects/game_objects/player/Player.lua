@@ -33,17 +33,18 @@ function Player:new(area, x, y, opts)
   }
 
   -- Player light
-  self.vision_range = 150
+  self.light_range = 150
   self.player_light = self.area.light_world:newLight(
     self.x,
     self.y,
     255, 127, 63, -- color
-    self.vision_range -- range
+    self.light_range -- range
   )
   self.player_light:setGlowStrength(0.3)
 end
 
 function Player:destroy()
+  self.area.light_world:remove(self.player_light)
   Player.super.destroy(self)
 end
 
