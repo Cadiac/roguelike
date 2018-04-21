@@ -134,7 +134,7 @@ function GameMap:spawn_light(x, y)
     x - self.map.tilewidth,
     y - self.map.tileheight,
     255, 64, 28,
-    50
+    100
   )
 
   -- Flicker
@@ -142,7 +142,7 @@ function GameMap:spawn_light(x, y)
     self.timer:tween(
       random(0.2, 0.3),
       light,
-      {range = random(95, 105)},
+      {range = random(95, 110)},
       'linear'
     )
   end)

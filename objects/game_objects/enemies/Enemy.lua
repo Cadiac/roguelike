@@ -33,6 +33,7 @@ function Enemy:new(area, x, y, opts)
     ['skill_slot_1'] = Skill()
   }
 
+  self.health_bar = self.area:addGameObject('HealthBar', self.x, self.y, { parent = self })
 end
 
 function Enemy:destroy()
@@ -74,8 +75,8 @@ function Enemy:update(dt)
       -- end
 
       -- Track players
-      -- self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
-      -- self.collider:setLinearVelocity(self.vx, self.vy)
+      self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
+      self.collider:setLinearVelocity(self.vx, self.vy)
 
       if self.collider:enter('Projectile') then
         local collision_data = self.collider:getEnterCollisionData('Projectile')
@@ -114,6 +115,8 @@ function Enemy:die()
   self.mana = 0
   self.hp = 0
   self.dead = true
+
+  self.health_bar:die()
 
   for i = 1, love.math.random(8, 12) do
     self.area:addGameObject('ExplodeParticle', self.x, self.y)

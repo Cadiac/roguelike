@@ -2,7 +2,7 @@ gw = 1280
 gh = 720
 gscale = 1
 sx, sy = 1, 1
-zoom = 2
+zoom = 2.2
 slow_amount = 1
 flash_frames = false
 

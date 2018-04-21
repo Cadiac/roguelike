@@ -33,8 +33,8 @@ function GameCoordinator:new(game)
 
   self.timer:every(2, function()
     self.game.area:addGameObject('Enemy',
-      self.game.player.x + fn.sample({-1, 1}) * random(gw/2, gw),
-      self.game.player.y + fn.sample({-1, 1}) * random(gh/2, gh)
+      self.game.player.x + fn.sample({-1, 1}) * random(gw/10, gw),
+      self.game.player.y + fn.sample({-1, 1}) * random(gh/10, gh)
     )
   end)
 end

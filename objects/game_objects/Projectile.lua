@@ -4,7 +4,7 @@ function Projectile:new(area, x, y, opts)
   Projectile.super.new(self, area, x, y, opts)
   self.depth = 50
 
-  self.s = (opts.s or 1) * gscale
+  self.s = (opts.s or 1)
   self.v = opts.v or 200
 
   self.start_x = x

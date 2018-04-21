@@ -20,6 +20,7 @@ require 'objects/game_objects/Circle'
 require 'objects/game_objects/Rectangle'
 require 'objects/game_objects/Projectile'
 require 'objects/game_objects/InfoText'
+require 'objects/game_objects/HealthBar'
 require 'objects/game_objects/DestructibleObject'
 
 -- Player Classes
