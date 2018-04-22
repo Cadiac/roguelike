@@ -9,7 +9,9 @@ LightWorld = require 'libraries/light_world/lib'
 
 require 'globals'
 require 'GameObject'
+require 'MapGenerator'
 require 'utils'
+
 require 'objects/Area'
 require 'objects/Shake'
 require 'objects/GameCoordinator'
@@ -137,6 +139,7 @@ function love.draw()
   end
 
   -- Mouse
+  love.graphics.setColor(default_color)
   love.graphics.line(mouse_x - 10, mouse_y, mouse_x + 10, mouse_y)
   love.graphics.line(mouse_x, mouse_y - 10, mouse_x, mouse_y + 10)
 
@@ -196,7 +199,7 @@ function rebindKeys()
     input:bind(keybinding, event)
   end
 
-  if drawDebug then
+  if drawDebug or true then
     input:bind('f1', function() gotoRoom('TitleRoom') end)
     input:bind('f2', function() gotoRoom('GameRoom') end)
     input:bind('f3', function() gotoRoom('RectangleRoom') end)
