@@ -51,14 +51,16 @@ function Leaf:split()
     -- If the area is too small stop splitting
     if self.width - self.min_dimension < self.min_dimension then return false end
 
-    local split_position = random(self.min_dimension, self.width - self.min_dimension)
+    -- local split_position = random(self.min_dimension, self.width - self.min_dimension)
+    local split_position = random(0.45, 0.55) * self.width
 
     self.left_child = Leaf(self.x, self.y, split_position, self.height, self.level+1)
     self.right_child = Leaf(self.x + split_position, self.y, self.width - split_position, self.height, self.level+1)
   else
     if self.height - self.min_dimension < self.min_dimension then return false end
 
-    local split_position = random(self.min_dimension, self.height - self.min_dimension)
+    -- local split_position = random(self.min_dimension, self.height - self.min_dimension)
+    local split_position = random(0.45, 0.55) * self.height
 
     self.left_child = Leaf(self.x, self.y, self.width, split_position, self.level+1)
     self.right_child = Leaf(self.x, self.y + split_position, self.width, self.height - split_position, self.level+1)
@@ -111,9 +113,19 @@ function Leaf:createCorridors()
         self.right_child.room.x + self.right_child.room.width
       )
 
+      local corridor_min_y, corridor_max_y
+
+      -- Room is above
+      if self.left_child.room.y < self.right_child.room.y then
+        corridor_min_y = self.left_child.room.y + self.left_child.room.height
+        corridor_max_y = self.right_child.room.y
+      -- Room is below
+      else
+        corridor_min_y = self.right_child.room.y + self.right_child.room.height
+        corridor_max_y = self.left_child.room.y
+      end
+
       local corridor_x = random(min_x, max_x)
-      local corridor_min_y = math.min(self.left_child.room.y, self.right_child.room.y)
-      local corridor_max_y = math.max(self.left_child.room.y, self.right_child.room.y)
 
       table.insert(self.corridors, {
         x1 = corridor_x,
@@ -129,9 +141,19 @@ function Leaf:createCorridors()
         self.right_child.room.y + self.right_child.room.height
       )
 
+      local corridor_min_x, corridor_max_x
+
+      -- Room is on the left side
+      if self.left_child.room.x < self.right_child.room.x then
+        corridor_min_x = self.left_child.room.x + self.left_child.room.width
+        corridor_max_x = self.right_child.room.x
+      -- Room is on the right
+      else
+        corridor_min_x = self.right_child.room.x + self.right_child.room.width
+        corridor_max_x = self.left_child.room.x
+      end
+
       local corridor_y = random(min_y, max_y)
-      local corridor_min_x = math.min(self.left_child.room.x, self.right_child.room.x)
-      local corridor_max_x = math.max(self.left_child.room.x, self.right_child.room.x)
 
       table.insert(self.corridors, {
         x1 = corridor_min_x,
@@ -174,6 +196,7 @@ function Leaf:draw()
 
     -- Door
     love.graphics.circle('fill', corridor.x1, corridor.y1, 10)
+    love.graphics.circle('fill', corridor.x2, corridor.y2, 10)
   end
 
   if self.left_child then self.left_child:draw() end
