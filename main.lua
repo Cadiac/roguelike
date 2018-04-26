@@ -7,6 +7,8 @@ Physics = require 'libraries/windfield/windfield'
 sti = require 'libraries/sti'
 LightWorld = require 'libraries/light_world/lib'
 
+inspect = require('libraries/inspect/inspect')
+
 require 'globals'
 require 'GameObject'
 require 'MapGenerator'
