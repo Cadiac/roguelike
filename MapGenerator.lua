@@ -212,6 +212,9 @@ function Leaf:createCorridors()
     print(inspect(closest.wall))
     print(inspect(closest.closest.wall))
 
+    -- Next find out which potential corridors to use
+    print('Best corridor is')
+    self.path = closest.wall:findMatchingCorridor(closest.closest.wall)
     self.closest = closest
   end
 end
@@ -279,6 +282,33 @@ function Leaf:findClosestWall()
     :value()
 end
 
+function Wall:findMatchingCorridor(wall)
+  if not self.potential_corridors or not wall.potential_corridors then return nil end
+
+  return fn(self.potential_corridors)
+    :map(function(_key, corridor)
+      return {
+        start_pos = corridor,
+        end_pos = fn(wall.potential_corridors)
+          :filter(function(_k, corr)
+            return corr.x == corridor.x or corr.y == corridor.y
+          end)
+          :value()
+      }
+    end)
+    :filter(function(_key, corridor)
+      return not fn.isEmpty(corridor.end_pos)
+    end)
+    :map(function(_key, corridor)
+      return {
+        start_pos = corridor.start_pos,
+        end_pos = fn.pop(corridor.end_pos)
+      }
+    end)
+    :pop()
+    :value()
+end
+
 function Leaf:draw()
   love.graphics.setColor(default_color)
   love.graphics.setLineWidth(3)
@@ -305,6 +335,12 @@ function Leaf:draw()
     love.graphics.setColor(hp_color)
     love.graphics.setLineWidth(3)
     love.graphics.line(self.closest.x1, self.closest.y1, self.closest.closest.x2, self.closest.closest.y2)
+  end
+
+  if self.path then
+    love.graphics.setColor(255, 0, 255)
+    love.graphics.setLineWidth(3)
+    love.graphics.line(self.path.start_pos.x, self.path.start_pos.y, self.path.end_pos.x, self.path.end_pos.y)
   end
 
   -- if self.potential_corridors and self.potential_corridors.top then
