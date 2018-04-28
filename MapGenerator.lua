@@ -1,3 +1,94 @@
+local tile_size  = 16
+
+local Wall = Object:extend()
+
+function Wall:new(start_corner, end_corner)
+  self.start_corner = start_corner
+  self.end_corner = end_corner
+
+  self.center = self:getCenter()
+  self.potential_corridors = self:findPotentialCorridors()
+end
+
+function Wall:getCenter()
+  return {
+    x = (self.start_corner.x + self.end_corner.x) / 2,
+    y = (self.start_corner.y + self.end_corner.y) / 2
+  }
+end
+
+function Wall:findPotentialCorridors()
+  local potential_corridors = {}
+
+  for x = self.start_corner.x + tile_size, self.end_corner.x - tile_size, tile_size do
+    table.insert(potential_corridors, { x = x, y = self.start_corner.y })
+    table.insert(potential_corridors, { x = x, y = self.end_corner.y })
+  end
+
+  for y = self.start_corner.y + tile_size, self.end_corner.y - tile_size, tile_size do
+    table.insert(potential_corridors, { x = self.start_corner.x, y = y })
+    table.insert(potential_corridors, { x = self.end_corner.x, y = y })
+  end
+
+  return potential_corridors
+end
+
+function Wall:draw()
+  love.graphics.setColor(0, 255, 0)
+  love.graphics.line(self.start_corner.x, self.start_corner.y, self.end_corner.x, self.end_corner.y)
+
+  for _key, potential_corridor in pairs(self.potential_corridors) do
+    love.graphics.setColor({0, 0, 255})
+    love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+  end
+
+end
+
+local Room = Object:extend()
+
+function Room:new(x, y, width, height)
+  self.x = x
+  self.y = y
+  self.width = width
+  self.height = height
+
+  self.walls = {
+    Wall(
+      { x = self.x, y = self.y },
+      { x = self.x + self.width, y = self.y }
+    ),
+    Wall(
+      { x = self.x, y = self.y },
+      { x = self.x, y = self.y + self.height }
+    ),
+    Wall(
+      { x = self.x, y = self.y + self.height },
+      { x = self.x + self.width, y = self.y + self.height }
+    ),
+    Wall(
+      { x = self.x + self.width, y = self.y },
+      { x = self.x + self.width, y = self.y + self.height }
+    )
+  }
+end
+
+function Room:getWalls()
+  return self.walls
+end
+
+function Room:draw()
+  love.graphics.rectangle('fill',
+    self.x,
+    self.y,
+    self.width,
+    self.height
+  )
+
+  for _key, wall in pairs(self.walls) do
+    wall:draw()
+  end
+end
+
 local Leaf = Object:extend()
 
 function Leaf:new(x, y, width, height, level)
@@ -86,12 +177,10 @@ function Leaf:createRooms()
     local offset_x = random(0, self.width - room_width)
     local offset_y = random(0, self.height - room_height)
 
-    self.room = {
-      x = math.floor((self.x + offset_x) - (self.x + offset_x) % self.tile_size),
-      y = math.floor((self.y + offset_y) - (self.y + offset_y) % self.tile_size),
-      width = room_width,
-      height = room_height
-    }
+    local room_x = math.floor((self.x + offset_x) - (self.x + offset_x) % self.tile_size)
+    local room_y = math.floor((self.y + offset_y) - (self.y + offset_y) % self.tile_size)
+
+    self.room = Room(room_x, room_y, room_width, room_height)
   end
 end
 
@@ -113,62 +202,21 @@ function Leaf:getRooms()
   return rooms
 end
 
-function Leaf:markPotentialCorridors()
-  if self.room then
-    for x = self.room.x + self.tile_size, self.room.x + self.room.width - self.tile_size, self.tile_size do
-      table.insert(self.potential_corridors.top, { x = x, y = self.room.y })
-      table.insert(self.potential_corridors.bottom, { x = x, y = self.room.y + self.room.height })
-    end
-
-    for y = self.room.y + self.tile_size, self.room.y + self.room.height - self.tile_size, self.tile_size do
-      table.insert(self.potential_corridors.left, { x = self.room.x, y = y })
-      table.insert(self.potential_corridors.right, { x = self.room.x + self.room.width, y = y })
-    end
-  else
-    if self.left_child then self.left_child:markPotentialCorridors() end
-    if self.right_child then self.right_child:markPotentialCorridors() end
-  end
-end
-
 function Leaf:createCorridors()
   if self.left_child and self.right_child then
-    if self.left_child.room and self.right_child.room then
-      local closest = self.left_child:findClosestWall(self.right_child)
-      print('Closest for', self.left_child.x, self.left_child.y)
-      print(inspect(closest))
+    if not self.left_child.room then self.left_child:createCorridors() end
+    if not self.right_child.room then self.right_child:createCorridors() end
 
-      self.closest = closest
-      -- Find closest walls
+    local closest = self:findClosestWall()
+    print('Closest for', self.x, self.y)
+    print(inspect(closest.wall))
+    print(inspect(closest.closest.wall))
 
-
-
-      -- for _key, corridor in pairs(self.right_child.potential_corridors) do
-      --   -- Find closest wall, and attempt to find potential corridors from there
-
-      --   local vertical_corridors = fn.where(self.left_child.potential_corridors, { x = corridor.x }) or {}
-      --   local horizontal_corridors = fn.where(self.left_child.potential_corridors, { y = corridor.y }) or {}
-
-      --   local matching = fn.append(vertical_corridors, horizontal_corridors)
-
-      --   local c = fn.sample(matching)
-
-      --   if c then
-      --     table.insert(self.corridors, {
-      --       x1 = corridor.x,
-      --       y1 = corridor.y,
-      --       x2 = c.x,
-      --       y2 = c.y
-      --     })
-      --   end
-      -- end
-    else
-      self.left_child:createCorridors()
-      self.right_child:createCorridors()
-    end
+    self.closest = closest
   end
 end
 
-function Leaf:getRoomPoints()
+function Leaf:getRoomCorners()
   return {
     { x = self.room.x, y = self.room.y },
     { x = self.room.x + self.room.width, y = self.room.y },
@@ -177,23 +225,44 @@ function Leaf:getRoomPoints()
   }
 end
 
-function Leaf:findClosestWall(leaf)
-  if not self.room or not leaf.room then return nil end
+function Leaf:findRoomClosestToLeaf(leaf)
+  local rooms = self:getRooms()
 
-  local first = self:getRoomPoints()
-  local second = leaf:getRoomPoints()
+  return fn(rooms)
+    :sortBy(function(room)
+      return distance(
+        room.x + room.width/2,
+        room.y + room.height/2,
+        leaf.x + leaf.width/2,
+        leaf.y + leaf.height/2
+      )
+    end)
+    :pop()
+    :value()
+end
 
-  return fn(first)
-    :map(function(_k1, corner1)
+function Leaf:findClosestWall()
+  if not self.left_child or not self.right_child then return nil end
+
+  -- Begin by finding rooms closest to each each leaf
+  local left_room = self.right_child:findRoomClosestToLeaf(self.left_child)
+  local left_room_walls = left_room:getWalls()
+  local right_room = self.left_child:findRoomClosestToLeaf(self.right_child)
+  local right_room_walls = right_room:getWalls()
+
+  return fn(left_room_walls)
+    :map(function(_k1, left_wall)
       return {
-        x1 = corner1.x,
-        y1 = corner1.y,
-        closest = fn(second)
-          :map(function(_k2, corner2)
+        wall = left_wall,
+        x1 = left_wall.center.x,
+        y1 = left_wall.center.y,
+        closest = fn(right_room_walls)
+          :map(function(_k2, right_wall)
             return {
-              x2 = corner2.x,
-              y2 = corner2.y,
-              distance = distance(corner1.x, corner1.y, corner2.x, corner2.y)
+              wall = right_wall,
+              x2 = right_wall.center.x,
+              y2 = right_wall.center.y,
+              distance = distance(left_wall.center.x, left_wall.center.y, right_wall.center.x, right_wall.center.y)
             }
           end)
           :sort(function(a, b)
@@ -206,7 +275,7 @@ function Leaf:findClosestWall(leaf)
     :sort(function(a, b)
       return a.closest.distance < b.closest.distance
     end)
-    :take(2)
+    :pop()
     :value()
 end
 
@@ -220,16 +289,7 @@ function Leaf:draw()
     self.height
   )
 
-  if self.room then
-    love.graphics.rectangle('fill',
-      self.room.x,
-      self.room.y,
-      self.room.width,
-      self.room.height
-    )
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print(self.level, self.room.x + self.room.width/2, self.room.y + self.room.height/2)
-  end
+  if self.room then self.room:draw() end
 
   -- for _key, corridor in ipairs(self.corridors) do
   --   love.graphics.setColor(hp_color)
@@ -244,37 +304,36 @@ function Leaf:draw()
   if self.closest then
     love.graphics.setColor(hp_color)
     love.graphics.setLineWidth(3)
-    love.graphics.line(self.closest[1].x1, self.closest[1].y1, self.closest[1].closest.x2, self.closest[1].closest.y2)
-    love.graphics.line(self.closest[2].x1, self.closest[2].y1, self.closest[2].closest.x2, self.closest[2].closest.y2)
+    love.graphics.line(self.closest.x1, self.closest.y1, self.closest.closest.x2, self.closest.closest.y2)
   end
 
-  if self.potential_corridors and self.potential_corridors.top then
-    for _key, potential_corridor in pairs(self.potential_corridors.top) do
-      love.graphics.setColor({255, 0, 0})
-      love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-    end
-  end
+  -- if self.potential_corridors and self.potential_corridors.top then
+  --   for _key, potential_corridor in pairs(self.potential_corridors.top) do
+  --     love.graphics.setColor({255, 0, 0})
+  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+  --   end
+  -- end
 
-  if self.potential_corridors and self.potential_corridors.bottom then
-    for _key, potential_corridor in pairs(self.potential_corridors.bottom) do
-      love.graphics.setColor({0, 255, 0})
-      love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-    end
-  end
+  -- if self.potential_corridors and self.potential_corridors.bottom then
+  --   for _key, potential_corridor in pairs(self.potential_corridors.bottom) do
+  --     love.graphics.setColor({0, 255, 0})
+  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+  --   end
+  -- end
 
-  if self.potential_corridors and self.potential_corridors.left then
-    for _key, potential_corridor in pairs(self.potential_corridors.left) do
-      love.graphics.setColor({0, 0, 255})
-      love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-    end
-  end
+  -- if self.potential_corridors and self.potential_corridors.left then
+  --   for _key, potential_corridor in pairs(self.potential_corridors.left) do
+  --     love.graphics.setColor({0, 0, 255})
+  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+  --   end
+  -- end
 
-  if self.potential_corridors and self.potential_corridors.right then
-    for _key, potential_corridor in pairs(self.potential_corridors.right) do
-      love.graphics.setColor({0, 255, 255})
-      love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-    end
-  end
+  -- if self.potential_corridors and self.potential_corridors.right then
+  --   for _key, potential_corridor in pairs(self.potential_corridors.right) do
+  --     love.graphics.setColor({0, 255, 255})
+  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+  --   end
+  -- end
 
   if self.left_child then self.left_child:draw() end
   if self.right_child then self.right_child:draw() end
@@ -285,7 +344,7 @@ MapGenerator = Object:extend()
 function MapGenerator:new(game)
   self.max_width = gw
   self.max_height = gh
-  self.max_level = 3
+  self.max_level = 4
 
   self.root_leaf = nil
   self.leafs = {}
@@ -297,7 +356,6 @@ function MapGenerator:generate()
 
   self.root_leaf:split(self.max_level)
   self.root_leaf:createRooms()
-  self.root_leaf:markPotentialCorridors()
   self.root_leaf:createCorridors()
 
   -- for level = self.max_level, 0, -1 do
