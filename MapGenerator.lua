@@ -6,6 +6,8 @@ function Wall:new(start_corner, end_corner)
   self.start_corner = start_corner
   self.end_corner = end_corner
 
+  self.horizontal = start_corner.y == end_corner.y
+
   self.center = self:getCenter()
   self.potential_corridors = self:findPotentialCorridors()
 end
@@ -214,7 +216,7 @@ function Leaf:createCorridors()
 
     -- Next find out which potential corridors to use
     print('Best corridor is')
-    self.path = closest.wall:findMatchingCorridor(closest.closest.wall)
+    self.path = closest.wall:findBestPathBetween(closest.closest.wall)
     self.closest = closest
   end
 end
@@ -282,94 +284,186 @@ function Leaf:findClosestWall()
     :value()
 end
 
-function Wall:findMatchingCorridor(wall)
+function Wall:findBestPathBetween(wall)
   if not self.potential_corridors or not wall.potential_corridors then return nil end
 
+  local straight_path = self:findStraightPath(wall)
+  if straight_path then return straight_path end
+
+  if self.horizontal == wall.horizontal then
+    local Z_shape_path = self:findZPath(wall)
+    if Z_shape_path then return Z_shape_path end
+  else
+    local L_shape_path = self:findLPath(wall)
+    if L_shape_path then return L_shape_path end
+  end
+end
+
+function Wall:findStraightPath(wall)
   return fn(self.potential_corridors)
-    :map(function(_key, corridor)
-      return {
-        start_pos = corridor,
-        end_pos = fn(wall.potential_corridors)
-          :filter(function(_k, corr)
-            return corr.x == corridor.x or corr.y == corridor.y
-          end)
-          :value()
+  :map(function(_key, corridor)
+    return {
+      start_pos = corridor,
+      end_pos = fn(wall.potential_corridors)
+        :filter(function(_k, corr)
+          return corr.x == corridor.x or corr.y == corridor.y
+        end)
+        :value()
+    }
+  end)
+  :filter(function(_key, corridor)
+    return not fn.isEmpty(corridor.end_pos)
+  end)
+  :map(function(_key, corridor)
+    return {
+      corridors = {
+        {
+          start_pos = corridor.start_pos,
+          end_pos = fn.pop(corridor.end_pos)
+        }
       }
-    end)
-    :filter(function(_key, corridor)
-      return not fn.isEmpty(corridor.end_pos)
-    end)
-    :map(function(_key, corridor)
-      return {
-        start_pos = corridor.start_pos,
-        end_pos = fn.pop(corridor.end_pos)
+    }
+  end)
+  :pop()
+  :value()
+end
+
+function Wall:findLPath(wall)
+  local start_corridor = fn(self.potential_corridors):sample():value()
+  local end_corridor = fn(wall.potential_corridors):sample():value()
+
+  if self.horizontal then
+    return {
+      corridors = {
+        {
+          start_pos = start_corridor,
+          end_pos = {
+            x = start_corridor.x,
+            y = end_corridor.y
+          }
+        },
+        {
+          start_pos = {
+            x = start_corridor.x,
+            y = end_corridor.y
+          },
+          end_pos = end_corridor
+        }
       }
-    end)
-    :pop()
-    :value()
+    }
+  else
+    return {
+      corridors = {
+        {
+          start_pos = start_corridor,
+          end_pos = {
+            x = end_corridor.x,
+            y = start_corridor.y
+          }
+        },
+        {
+          start_pos = {
+            x = end_corridor.x,
+            y = start_corridor.y
+          },
+          end_pos = end_corridor
+        }
+      }
+    }
+  end
+end
+
+function Wall:findZPath(wall)
+  local start_corridor = fn(self.potential_corridors):sample():value()
+  local end_corridor = fn(wall.potential_corridors):sample():value()
+
+  if self.horizontal then
+    return {
+      corridors = {
+        {
+          start_pos = start_corridor,
+          end_pos = {
+            x = start_corridor.x,
+            y = (start_corridor.y + end_corridor.y) / 2
+          }
+        },
+        {
+          start_pos = {
+            x = start_corridor.x,
+            y = (start_corridor.y + end_corridor.y) / 2
+          },
+          end_pos = {
+            x = end_corridor.x,
+            y = (start_corridor.y + end_corridor.y) / 2
+          }
+        },
+        {
+          start_pos = {
+            x = end_corridor.x,
+            y = (start_corridor.y + end_corridor.y) / 2
+          },
+          end_pos = end_corridor
+        }
+      }
+    }
+  else
+    return {
+      corridors = {
+        {
+          start_pos = start_corridor,
+          end_pos = {
+            x = (start_corridor.x + end_corridor.x) / 2,
+            y = start_corridor.y
+          }
+        },
+        {
+          start_pos = {
+            x = (start_corridor.x + end_corridor.x) / 2,
+            y = start_corridor.y
+          },
+          end_pos = {
+            x = (start_corridor.x + end_corridor.x) / 2,
+            y = end_corridor.y
+          }
+        },
+        {
+          start_pos = {
+            x = (end_corridor.x + start_corridor.x) / 2,
+            y = end_corridor.y
+          },
+          end_pos = end_corridor
+        }
+      }
+    }
+  end
 end
 
 function Leaf:draw()
   love.graphics.setColor(default_color)
-  love.graphics.setLineWidth(3)
-  love.graphics.rectangle('line',
-    self.x,
-    self.y,
-    self.width,
-    self.height
-  )
+
+  -- love.graphics.setLineWidth(3)
+  -- love.graphics.rectangle('line',
+  --   self.x,
+  --   self.y,
+  --   self.width,
+  --   self.height
+  -- )
 
   if self.room then self.room:draw() end
 
-  -- for _key, corridor in ipairs(self.corridors) do
+  -- if self.closest then
   --   love.graphics.setColor(hp_color)
   --   love.graphics.setLineWidth(3)
-  --   love.graphics.line(corridor.x1, corridor.y1, corridor.x2, corridor.y2)
-
-  --   -- Door
-  --   love.graphics.circle('fill', corridor.x1, corridor.y1, 10)
-  --   love.graphics.circle('fill', corridor.x2, corridor.y2, 10)
+  --   love.graphics.line(self.closest.x1, self.closest.y1, self.closest.closest.x2, self.closest.closest.y2)
   -- end
-
-  if self.closest then
-    love.graphics.setColor(hp_color)
-    love.graphics.setLineWidth(3)
-    love.graphics.line(self.closest.x1, self.closest.y1, self.closest.closest.x2, self.closest.closest.y2)
-  end
 
   if self.path then
     love.graphics.setColor(255, 0, 255)
     love.graphics.setLineWidth(3)
-    love.graphics.line(self.path.start_pos.x, self.path.start_pos.y, self.path.end_pos.x, self.path.end_pos.y)
+    for _key, corridor in pairs(self.path.corridors) do
+      love.graphics.line(corridor.start_pos.x, corridor.start_pos.y, corridor.end_pos.x, corridor.end_pos.y)
+    end
   end
-
-  -- if self.potential_corridors and self.potential_corridors.top then
-  --   for _key, potential_corridor in pairs(self.potential_corridors.top) do
-  --     love.graphics.setColor({255, 0, 0})
-  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-  --   end
-  -- end
-
-  -- if self.potential_corridors and self.potential_corridors.bottom then
-  --   for _key, potential_corridor in pairs(self.potential_corridors.bottom) do
-  --     love.graphics.setColor({0, 255, 0})
-  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-  --   end
-  -- end
-
-  -- if self.potential_corridors and self.potential_corridors.left then
-  --   for _key, potential_corridor in pairs(self.potential_corridors.left) do
-  --     love.graphics.setColor({0, 0, 255})
-  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-  --   end
-  -- end
-
-  -- if self.potential_corridors and self.potential_corridors.right then
-  --   for _key, potential_corridor in pairs(self.potential_corridors.right) do
-  --     love.graphics.setColor({0, 255, 255})
-  --     love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
-  --   end
-  -- end
 
   if self.left_child then self.left_child:draw() end
   if self.right_child then self.right_child:draw() end
