@@ -328,9 +328,41 @@ function Wall:findStraightPath(wall)
   :value()
 end
 
+function Wall:findClosestCorridors(wall)
+  return fn(self.potential_corridors)
+    :reduce(function(acc, start_corridor, state)
+      local closest = fn(wall.potential_corridors)
+        :reduce(function(acc, end_corridor, min)
+          local min_distance = distance(start_corridor.x, start_corridor.y, end_corridor.x, end_corridor.y)
+
+          if not min or min.distance > min_distance then
+            return {
+              end_corridor = end_corridor,
+              distance = min_distance
+            }
+          else
+            return min
+          end
+        end)
+        :value()
+
+      if not state or state.distance > closest.distance then
+        return {
+          start_corridor = start_corridor,
+          end_corridor = closest.end_corridor,
+          distance = closest.distance
+        }
+      else
+        return state
+      end
+    end)
+    :value()
+end
+
 function Wall:findLPath(wall)
-  local start_corridor = fn(self.potential_corridors):sample():value()
-  local end_corridor = fn(wall.potential_corridors):sample():value()
+  local corridors = self:findClosestCorridors(wall)
+  local start_corridor = corridors.start_corridor
+  local end_corridor = corridors.end_corridor
 
   if self.horizontal then
     return {
@@ -374,8 +406,9 @@ function Wall:findLPath(wall)
 end
 
 function Wall:findZPath(wall)
-  local start_corridor = fn(self.potential_corridors):sample():value()
-  local end_corridor = fn(wall.potential_corridors):sample():value()
+  local corridors = self:findClosestCorridors(wall)
+  local start_corridor = corridors.start_corridor
+  local end_corridor = corridors.end_corridor
 
   if self.horizontal then
     return {
