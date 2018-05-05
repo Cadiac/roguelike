@@ -211,8 +211,6 @@ function Leaf:createCorridors()
 
     local closest = self:findClosestWall()
     print('Closest for', self.x, self.y)
-    print(inspect(closest.wall))
-    print(inspect(closest.closest.wall))
 
     -- Next find out which potential corridors to use
     print('Best corridor is')
@@ -329,34 +327,31 @@ function Wall:findStraightPath(wall)
 end
 
 function Wall:findClosestCorridors(wall)
-  return fn(self.potential_corridors)
-    :reduce(function(acc, start_corridor, state)
-      local closest = fn(wall.potential_corridors)
-        :reduce(function(acc, end_corridor, min)
-          local min_distance = distance(start_corridor.x, start_corridor.y, end_corridor.x, end_corridor.y)
+  return fn.reduce(self.potential_corridors, function(state, start_corridor)
+    local closest = fn.reduce(wall.potential_corridors, function(acc, end_corridor)
+      local min_distance = math.floor(distance(start_corridor.x, start_corridor.y, end_corridor.x, end_corridor.y))
 
-          if not min or min.distance > min_distance then
-            return {
-              end_corridor = end_corridor,
-              distance = min_distance
-            }
-          else
-            return min
-          end
-        end)
-        :value()
-
-      if not state or state.distance > closest.distance then
+      print(inspect(acc))
+      if not (acc and acc.distance) or acc.distance > min_distance then
         return {
-          start_corridor = start_corridor,
-          end_corridor = closest.end_corridor,
-          distance = closest.distance
+          end_corridor = end_corridor,
+          distance = min_distance
         }
       else
-        return state
+        return acc
       end
     end)
-    :value()
+
+    if not (state and state.distance) or state.distance > closest.distance then
+      return {
+        start_corridor = start_corridor,
+        end_corridor = closest.end_corridor,
+        distance = closest.distance
+      }
+    else
+      return state
+    end
+  end)
 end
 
 function Wall:findLPath(wall)
