@@ -503,6 +503,11 @@ end
 
 MapGenerator = Object:extend()
 
+local EMPTY_TILE = 0
+local WALL_TILE = 1
+local ROOM_TILE = 2
+local PATH_TILE = 3
+
 function MapGenerator:new(game)
   self.max_width = gw
   self.max_height = gh
@@ -510,24 +515,51 @@ function MapGenerator:new(game)
 
   self.root_leaf = nil
   self.leafs = {}
+  self.rooms = {}
+  self.map_grid = {}
+
+  for y = 0, gh, tile_size do
+    self.map_grid[y] = {}
+    for x = 0, gw, tile_size do
+      self.map_grid[y][x] = EMPTY_TILE
+    end
+  end
 end
 
 function MapGenerator:generate()
-  repeat
-    self.leafs = {}
-    self.root_leaf = Leaf(0, 0, self.max_width, self.max_height)
-    table.insert(self.leafs, self.root_leaf)
+  self.leafs = {}
+  self.root_leaf = Leaf(0, 0, self.max_width, self.max_height)
+  table.insert(self.leafs, self.root_leaf)
 
-    self.root_leaf:split(self.max_level)
-    self.root_leaf:createRooms()
-    self.root_leaf:createCorridors()
-  until not false --self:hasOverlapingPaths()
+  self.root_leaf:split(self.max_level)
+  self.root_leaf:createRooms()
+  self.rooms = self.root_leaf:getRooms()
 
-  -- for level = self.max_level, 0, -1 do
-  --   for _, leaf in pairs(self:getLeafsByLevel(level)) do
-  --     leaf:createCorridors()
-  --   end
-  -- end
+  for _key, room in pairs(self.rooms) do
+    for y = room.y, room.y + room.height, tile_size do
+      for x = room.x, room.x + room.width, tile_size do
+        self.map_grid[y][x] = ROOM_TILE
+      end
+    end
+  end
+
+  self.root_leaf:createCorridors()
+
+  self.corridors = {}
+
+  for _key, leaf in pairs(self.leafs) do
+    if leaf.path and leaf.path.corridors then
+      self.corridors = fn.append(self.corridors, leaf.path.corridors)
+    end
+  end
+
+  for _key, corridor in pairs(self.corridors) do
+    for y = corridor.start_pos.y, corridor.end_pos.y, tile_size do
+      for x = corridor.start_pos.x, corridor.end_pos.x, tile_size do
+        self.map_grid[y][x] = PATH_TILE
+      end
+    end
+  end
 end
 
 function MapGenerator:draw()
@@ -564,17 +596,8 @@ function MapGenerator:getLeafsByLevel(level, leaf)
 end
 
 function MapGenerator:hasOverlapingPaths()
-  local rooms = self.root_leaf:getRooms()
-  local corridors = {}
-
-  for _key, leaf in pairs(self.leafs) do
-    if leaf.path and leaf.path.corridors then
-      corridors = fn.append(corridors, leaf.path.corridors)
-    end
-  end
-
-  local corridors_hit = fn.any(corridors, function(corridor)
-    local corridor_hit = fn.any(rooms, function(room)
+  local corridors_hit = fn.any(self.corridors, function(corridor)
+    local corridor_hit = fn.any(self.rooms, function(room)
       local room_hit = fn.any(room:getWalls(), function(wall)
         -- print('Checking intersection')
         -- print(inspect(corridor))
