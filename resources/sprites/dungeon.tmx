@@ -377,6 +377,6 @@
   </object>
  </objectgroup>
  <objectgroup name="Spawns">
-  <object id="34" name="player" type="Player" x="1056" y="96" width="16" height="16"/>
+  <object id="34" template="../templates/player_spawn.json" x="1056" y="96"/>
  </objectgroup>
 </map>

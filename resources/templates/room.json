@@ -1,0 +1,14 @@
+{ "object":
+    {
+     "height":80,
+     "id":37,
+     "name":"room",
+     "rotation":0,
+     "type":"Room",
+     "visible":true,
+     "width":176,
+     "x":2064,
+     "y":1920
+    },
+ "type":"template"
+}

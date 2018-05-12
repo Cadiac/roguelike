@@ -5,7 +5,7 @@ function GameMap:new(game, file_name)
   self.game = game
   self.timer = Timer()
 
-  self.file_name = file_name or 'resources/sprites/dungeon.lua'
+  self.file_name = file_name or 'resources/sprites/level-1.lua'
   self.tile_size = 16
   self.map = sti.new(self.file_name, nil, -self.tile_size, -self.tile_size)
 
@@ -30,13 +30,15 @@ function GameMap:new(game, file_name)
       self:spawn_destructible(object.x, object.y, object.width, object.height)
     elseif object.type == 'Light' then
       self:spawn_light(object.x, object.y)
+    elseif object.type == 'Room' then
+      -- Do nothing
     else
-      print('Unknown object ' .. object.name .. ' at map ' .. file_name)
+      print('Unknown object ' .. object.name .. ' at map ' .. self.file_name)
     end
   end
 
   self.map:removeLayer("Spawns")
-  self.map:removeLayer("Game objects")
+  self.map:removeLayer("Rooms")
   self.map:removeLayer("Walls")
 end
 

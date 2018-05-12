@@ -24,18 +24,12 @@ end
 function Wall:findPotentialCorridors()
   local potential_corridors = {}
 
-  local x_start = math.floor(self.start_corner.x + 1.5*tile_size)
-  local x_end = math.floor(self.end_corner.x - 1.5*tile_size)
-
-  for x = x_start, x_end, tile_size do
+  for x = self.start_corner.x, self.end_corner.x do
     table.insert(potential_corridors, { x = x, y = self.start_corner.y })
     table.insert(potential_corridors, { x = x, y = self.end_corner.y })
   end
 
-  local y_start = math.floor(self.start_corner.y + 1.5*tile_size)
-  local y_end = math.floor(self.end_corner.y - 1.5*tile_size)
-
-  for y = y_start, y_end, tile_size do
+  for y = self.start_corner.y, self.end_corner.y do
     table.insert(potential_corridors, { x = self.start_corner.x, y = y })
     table.insert(potential_corridors, { x = self.end_corner.x, y = y })
   end
@@ -48,8 +42,12 @@ function Wall:draw()
   love.graphics.line(self.start_corner.x, self.start_corner.y, self.end_corner.x, self.end_corner.y)
 
   for _key, potential_corridor in pairs(self.potential_corridors) do
-    love.graphics.setColor({0, 0, 255})
-    love.graphics.circle('fill', potential_corridor.x, potential_corridor.y, 4)
+    -- love.graphics.setColor({0, 0, 255})
+    -- love.graphics.circle('line',
+    --   potential_corridor.x,
+    --   potential_corridor.y,
+    --   1
+    -- )
   end
 
 end
@@ -107,8 +105,8 @@ function Leaf:new(x, y, width, height, level)
   self.width = width
   self.height = height
 
-  self.min_dimension = 96
-  self.max_dimension = 320
+  self.min_dimension = 100
+  self.max_dimension = 200
   self.split_low = 0.40
   self.split_high = 0.60
 
@@ -117,7 +115,7 @@ function Leaf:new(x, y, width, height, level)
   self.room = nil
   self.left_child = nil
   self.right_child = nil
-  self.corridors = {}
+  self.path = nil
 end
 
 function Leaf:split(max_level)
@@ -135,20 +133,18 @@ function Leaf:split(max_level)
     if self.width - self.min_dimension < self.min_dimension then return false end
 
     -- Round down to tilesize
-    local rand_position = random(self.split_low, self.split_high) * self.width
-    local split_position = math.floor(rand_position - rand_position % tile_size)
+    local rand_position = math.floor(random(self.split_low, self.split_high) * self.width)
 
-    self.left_child = Leaf(self.x, self.y, split_position, self.height, self.level+1)
-    self.right_child = Leaf(self.x + split_position, self.y, self.width - split_position, self.height, self.level+1)
+    self.left_child = Leaf(self.x, self.y, rand_position, self.height, self.level+1)
+    self.right_child = Leaf(self.x + rand_position, self.y, self.width - rand_position, self.height, self.level+1)
   else
     if self.height - self.min_dimension < self.min_dimension then return false end
 
     -- Round down to tilesize
-    local rand_position = random(self.split_low, self.split_high) * self.height
-    local split_position = math.floor(rand_position - rand_position % tile_size)
+    local rand_position = math.floor(random(self.split_low, self.split_high) * self.height)
 
-    self.left_child = Leaf(self.x, self.y, self.width, split_position, self.level+1)
-    self.right_child = Leaf(self.x, self.y + split_position, self.width, self.height - split_position, self.level+1)
+    self.left_child = Leaf(self.x, self.y, self.width, rand_position, self.level+1)
+    self.right_child = Leaf(self.x, self.y + rand_position, self.width, self.height - rand_position, self.level+1)
   end
 
   self.left_child:split(max_level)
@@ -171,17 +167,19 @@ function Leaf:createRooms()
     if self.left_child then self.left_child:createRooms() end
     if self.right_child then self.right_child:createRooms() end
   else
-    local rand_width = random(self.min_dimension - tile_size*2, self.width - tile_size*2)
-    local rand_height = random(self.min_dimension - tile_size*2, self.height - tile_size*2)
+    local possible_dimensions = {50, 100}
 
-    local room_width = math.floor(rand_width - rand_width % tile_size)
-    local room_height = math.floor(rand_height - rand_height % tile_size)
+    -- local room_width = math.floor(random(self.min_dimension, self.width))
+    -- local room_height = math.floor(random(self.min_dimension, self.height))
 
-    local offset_x = random(tile_size, self.width - room_width - tile_size)
-    local offset_y = random(tile_size, self.height - room_height - tile_size)
+    local room_width = fn.sample(possible_dimensions)
+    local room_height = fn.sample(possible_dimensions)
 
-    local room_x = math.floor((self.x + offset_x) - (self.x + offset_x) % tile_size)
-    local room_y = math.floor((self.y + offset_y) - (self.y + offset_y) % tile_size)
+    local offset_x = math.floor(random(0, self.width - room_width))
+    local offset_y = math.floor(random(0, self.height - room_height))
+
+    local room_x = self.x + offset_x
+    local room_y = self.y + offset_y
 
     self.room = Room(room_x, room_y, room_width, room_height)
   end
@@ -211,10 +209,7 @@ function Leaf:createCorridors()
     if not self.right_child.room then self.right_child:createCorridors() end
 
     local closest = self:findClosestWall()
-    print('Closest for', self.x, self.y)
 
-    -- Next find out which potential corridors to use
-    print('Best corridor is')
     self.path = closest.wall:findBestPathBetween(closest.closest.wall)
     self.closest = closest
   end
@@ -248,7 +243,7 @@ end
 function Leaf:findClosestWall()
   if not self.left_child or not self.right_child then return nil end
 
-  -- Begin by finding rooms closest to each each leaf
+  -- Begin by finding rooms closest to each leaf
   local left_room = self.right_child:findRoomClosestToLeaf(self.left_child)
   local left_room_walls = left_room:getWalls()
   local right_room = self.left_child:findRoomClosestToLeaf(self.right_child)
@@ -406,7 +401,7 @@ function Wall:findZPath(wall)
   local end_corridor = corridors.end_corridor
 
   if self.horizontal then
-    local pivot_position = (start_corridor.y + end_corridor.y) / 2
+    local pivot_position = math.floor((start_corridor.y + end_corridor.y) / 2)
 
     return {
       corridors = {
@@ -437,7 +432,7 @@ function Wall:findZPath(wall)
       }
     }
   else
-    local pivot_position = (start_corridor.x + end_corridor.x) / 2
+    local pivot_position = math.floor((start_corridor.x + end_corridor.x) / 2)
 
     return {
       corridors = {
@@ -493,7 +488,12 @@ function Leaf:draw()
     love.graphics.setColor(255, 0, 255)
     love.graphics.setLineWidth(3)
     for _key, corridor in pairs(self.path.corridors) do
-      love.graphics.line(corridor.start_pos.x, corridor.start_pos.y, corridor.end_pos.x, corridor.end_pos.y)
+      love.graphics.line(
+        corridor.start_pos.x,
+        corridor.start_pos.y,
+        corridor.end_pos.x,
+        corridor.end_pos.y
+      )
     end
   end
 
@@ -518,9 +518,9 @@ function MapGenerator:new(game)
   self.rooms = {}
   self.map_grid = {}
 
-  for y = 0, gh, tile_size do
+  for y = 0, self.max_height do
     self.map_grid[y] = {}
-    for x = 0, gw, tile_size do
+    for x = 0, self.max_width do
       self.map_grid[y][x] = EMPTY_TILE
     end
   end
@@ -529,33 +529,41 @@ end
 function MapGenerator:generate()
   self.leafs = {}
   self.root_leaf = Leaf(0, 0, self.max_width, self.max_height)
-  table.insert(self.leafs, self.root_leaf)
 
   self.root_leaf:split(self.max_level)
   self.root_leaf:createRooms()
+
   self.rooms = self.root_leaf:getRooms()
 
   for _key, room in pairs(self.rooms) do
-    for y = room.y, room.y + room.height, tile_size do
-      for x = room.x, room.x + room.width, tile_size do
+    for y = room.y, room.y + room.height do
+      for x = room.x, room.x + room.width do
         self.map_grid[y][x] = ROOM_TILE
       end
     end
   end
 
   self.root_leaf:createCorridors()
+  self.leafs = self:getLeafs()
 
   self.corridors = {}
 
+  print('GENERATE')
+
+  print('LEAFS')
   for _key, leaf in pairs(self.leafs) do
+    print(leaf.x, leaf.y, leaf.width, leaf.height)
     if leaf.path and leaf.path.corridors then
+      print('has corridor')
       self.corridors = fn.append(self.corridors, leaf.path.corridors)
     end
   end
 
+  print('CORRIDORS')
   for _key, corridor in pairs(self.corridors) do
-    for y = corridor.start_pos.y, corridor.end_pos.y, tile_size do
-      for x = corridor.start_pos.x, corridor.end_pos.x, tile_size do
+    for y = corridor.start_pos.y, corridor.end_pos.y do
+      for x = corridor.start_pos.x, corridor.end_pos.x do
+        print(x,y)
         self.map_grid[y][x] = PATH_TILE
       end
     end
@@ -563,18 +571,28 @@ function MapGenerator:generate()
 end
 
 function MapGenerator:draw()
-  love.graphics.setColor(64, 64, 64)
-  love.graphics.setLineWidth(1)
+  love.graphics.push()
+    love.graphics.setColor(64, 64, 64)
+    love.graphics.setLineWidth(1)
 
-  for x = tile_size, gw, tile_size do
-    love.graphics.line(x, 0, x, gh)
+    self.root_leaf:draw(default_color)
+  love.graphics.pop()
+end
+
+function MapGenerator:getLeafs(leaf)
+  if not leaf then leaf = self.root_leaf end
+
+  local leafs = {leaf}
+
+  if leaf.left_child then
+    leafs = fn.append(leafs, self:getLeafs(leaf.left_child))
   end
 
-  for y = tile_size, gh, tile_size do
-    love.graphics.line(0, y, gw, y)
+  if leaf.right_child then
+    leafs = fn.append(leafs, self:getLeafs(leaf.right_child))
   end
 
-  self.root_leaf:draw(default_color)
+  return leafs
 end
 
 function MapGenerator:getLeafsByLevel(level, leaf)
@@ -599,12 +617,6 @@ function MapGenerator:hasOverlapingPaths()
   local corridors_hit = fn.any(self.corridors, function(corridor)
     local corridor_hit = fn.any(self.rooms, function(room)
       local room_hit = fn.any(room:getWalls(), function(wall)
-        -- print('Checking intersection')
-        -- print(inspect(corridor))
-        -- print(corridor.start_pos.x, corridor.start_pos.y)
-        -- print(corridor.end_pos.x, corridor.end_pos.y)
-        -- print(wall.start_corner.x, wall.start_corner.y)
-        -- print(wall.end_corner.x, wall.end_corner.y)
 
         local wall_hit = vector.findIntersect(
           corridor.start_pos.x, corridor.start_pos.y,
@@ -612,21 +624,15 @@ function MapGenerator:hasOverlapingPaths()
           wall.start_corner.x, wall.start_corner.y,
           wall.end_corner.x, wall.end_corner.y
         )
-        print('wall was', wall_hit)
 
         return wall_hit
       end)
 
-      print('Room', room.x, room.y, room.width, room.height)
-      print('Room was', room_hit)
       return room_hit
     end)
 
-    print('Corridor was', corridor_hit)
     return corridor_hit
   end)
-
-  print('Corridors were overlapping', corridors_hit)
 
   return corridors_hit
 end

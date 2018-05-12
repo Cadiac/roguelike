@@ -1,0 +1,14 @@
+{ "object":
+    {
+     "height":80,
+     "id":3,
+     "name":"invisible_wall",
+     "rotation":0,
+     "type":"InvisibleWall",
+     "visible":true,
+     "width":0,
+     "x":2400,
+     "y":1920
+    },
+ "type":"template"
+}

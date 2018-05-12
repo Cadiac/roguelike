@@ -1,0 +1,14 @@
+{ "object":
+    {
+     "height":16,
+     "id":5,
+     "name":"door",
+     "rotation":0,
+     "type":"Door",
+     "visible":true,
+     "width":16,
+     "x":240,
+     "y":160
+    },
+ "type":"template"
+}

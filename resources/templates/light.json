@@ -1,0 +1,15 @@
+{ "object":
+    {
+     "height":0,
+     "id":46,
+     "name":"light",
+     "point":true,
+     "rotation":0,
+     "type":"Light",
+     "visible":true,
+     "width":0,
+     "x":2152,
+     "y":1961.5
+    },
+ "type":"template"
+}
