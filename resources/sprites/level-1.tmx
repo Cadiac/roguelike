@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="256" height="256" tilewidth="16" tileheight="16" infinite="0" nextobjectid="57">
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="256" height="256" tilewidth="16" tileheight="16" infinite="0" nextobjectid="76">
  <tileset firstgid="1" source="../map/dungeon.tsx"/>
  <layer name="Background" width="256" height="256" locked="1">
   <data encoding="csv">
@@ -521,7 +521,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="Cosmetic" width="256" height="256" locked="1">
+ <layer name="Cosmetic" width="256" height="256">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -781,7 +781,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Walls" locked="1">
+ <objectgroup name="Walls" visible="0" locked="1">
   <object id="3" template="../templates/invisible_wall.json" x="2336" y="2000"/>
   <object id="4" template="../templates/invisible_wall.json" x="2256" y="2000" height="32"/>
   <object id="8" template="../templates/invisible_wall.json" x="2256" y="2048" height="32"/>
@@ -820,7 +820,35 @@
  <objectgroup name="Spawns" locked="1">
   <object id="56" template="../templates/player_spawn.json" x="2032" y="2032"/>
  </objectgroup>
- <objectgroup name="Rooms" locked="1">
+ <objectgroup name="Doors">
+  <object id="69" template="../templates/door.json" x="2064" y="2080"/>
+  <object id="70" template="../templates/door.json" x="2064" y="2176">
+   <properties>
+    <property name="horizontal" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="71" template="../templates/door.json" x="2144" y="2256">
+   <properties>
+    <property name="horizontal" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="72" template="../templates/door.json" x="2240" y="2256">
+   <properties>
+    <property name="horizontal" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="73" template="../templates/door.json" x="2176" y="2032">
+   <properties>
+    <property name="horizontal" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="75" template="../templates/door.json" x="2240" y="2032">
+   <properties>
+    <property name="horizontal" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Rooms" visible="0" locked="1">
   <object id="37" template="../templates/room.json" x="2000" y="2000"/>
   <object id="38" template="../templates/room.json" x="2000" y="2192" width="144" height="160"/>
   <object id="40" template="../templates/room.json" x="2256" y="2192" width="144" height="160"/>

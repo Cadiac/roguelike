@@ -1,66 +1,35 @@
 GameCoordinator = Object:extend()
 
-function GameCoordinator:new(game)
+function GameCoordinator:new(game, player_class)
   self.timer = Timer()
 
   self.game = game
 
   self.current_level = 0
-  self.max_width = 1000
-  self.max_height = 1000
-  self.tile_types = {
-    {
-      ['type'] = 'grass',
-      ['collider'] = false
-    },
-    -- {
-    --   ['type'] = 'parquet',
-    --   ['collider'] = false
-    -- },
-    {
-      ['type'] = 'kitchen',
-      ['collider'] = true
-    }
-    -- {
-    --   ['type'] = 'red',
-    --   ['collider'] = false
-    -- }
-  }
 
   self.seed = 1234567800
 
-  self.map = {}
+  self.player = nil
+  self.map = GameMap(self.game, self)
 
   self.timer:every(2, function()
     self.game.area:addGameObject('Enemy',
-      self.game.player.x + fn.sample({-1, 1}) * random(gw/10, gw),
-      self.game.player.y + fn.sample({-1, 1}) * random(gh/10, gh)
+      self.player.x + fn.sample({-1, 1}) * random(gw/10, gw),
+      self.player.y + fn.sample({-1, 1}) * random(gh/10, gh)
     )
   end)
 end
 
 function GameCoordinator:update(dt)
   self.timer:update(dt)
+  self.map:update(dt)
 end
 
 function GameCoordinator:destroy()
 end
 
-function GameCoordinator:generateMap()
-  print('Generating map with seed', self.seed)
-  self.map = fn.chain(fn.range(1, self.max_width * self.max_height))
-    :map(function(_k, _v) return fn.sample(self.tile_types, 1, self.seed + _k) end)
-    :value()
-
-  for index = 1, #self.map do
-    if self.map[index]['collider'] then
-      local x = (index - 1) % self.game.coordinator.max_width * 32
-      local y = math.floor((index - 1) / self.game.coordinator.max_height) * 32
-
-      -- local collider = self.game.area.world:newRectangleCollider(x, y, 32, 32)
-      -- collider:setCollisionClass('Solid')
-      -- collider:setType('static')
-    end
-  end
-  print('Generated map with size', #self.map)
+function GameCoordinator:spawnPlayer(x, y)
+  print('Spawning player at ', x, y)
+  self.player = self.game.area:addGameObject(self.game.player_class, x, y)
+  camera:lookAt(self.player.x, self.player.y)
 end

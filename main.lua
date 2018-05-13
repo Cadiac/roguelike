@@ -59,7 +59,7 @@ require 'objects/skills/Icewall'
 local available_rooms = {
   ['TitleRoom'] = require 'rooms/TitleRoom',
   ['ClassSelectionRoom'] = require 'rooms/ClassSelectionRoom',
-  ['GameRoom'] = require 'rooms/GameRoom',
+  ['GameRoom'] = require 'rooms/Game',
   ['RectangleRoom'] = require 'rooms/RectangleRoom'
 }
 

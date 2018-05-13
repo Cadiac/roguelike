@@ -1,8 +1,9 @@
 GameMap = Object:extend()
 
-function GameMap:new(game, file_name)
-  self.depth = 10
+function GameMap:new(game, coordinator, file_name)
   self.game = game
+  self.coordinator = coordinator
+
   self.timer = Timer()
 
   self.file_name = file_name or 'resources/sprites/level-1.lua'
@@ -11,7 +12,7 @@ function GameMap:new(game, file_name)
 
   for k, object in pairs(self.map.objects) do
     if object.type == 'Player' then
-      self.game:spawnPlayer(object.x, object.y)
+      self.coordinator:spawnPlayer(object.x, object.y)
     elseif object.type == 'Wall' then
       if object.width == 0 or object.height == 0 then
         self:spawn_thin_wall(object.x, object.y, object.width, object.height)
@@ -32,6 +33,8 @@ function GameMap:new(game, file_name)
       self:spawn_light(object.x, object.y)
     elseif object.type == 'Room' then
       -- Do nothing
+    elseif object.type == 'Door' then
+      -- Do nothing
     else
       print('Unknown object ' .. object.name .. ' at map ' .. self.file_name)
     end
@@ -39,6 +42,7 @@ function GameMap:new(game, file_name)
 
   self.map:removeLayer("Spawns")
   self.map:removeLayer("Rooms")
+  self.map:removeLayer("Doors")
   self.map:removeLayer("Walls")
 end
 

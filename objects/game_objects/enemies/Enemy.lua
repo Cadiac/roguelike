@@ -44,29 +44,30 @@ function Enemy:update(dt)
   Enemy.super.update(self, dt)
 
   if self.passive and
-    not current_room.room.player.dead and
-    distance(self.x, self.y, current_room.room.player.x, current_room.room.player.y) <= gw
+    current_room.room.coordinator.player and
+    not current_room.room.coordinator.player.dead and
+    distance(self.x, self.y, current_room.room.coordinator.player.x, current_room.room.coordinator.player.y) <= gw
   then
     print('Player nearby, waking up')
     self.passive = false
     self.passive_end = love.timer.getTime()
   end
 
-  if not self.passive then
+  if not self.passive and current_room.room.coordinator.player then
     -- Go passive again if player is dead or far
-    if current_room.room.player.dead then
+    if current_room.room.coordinator.player.dead then
       print('Job Done!')
       self.r = self.r + math.pi
       self.vx, self.vy = coordsInDirection(0, 0, self.v_max, self.r)
       self.collider:setLinearVelocity(self.vx, self.vy)
       self.passive = true
     elseif love.timer.getTime() - self.passive_end > 10 and distance(
-      self.x, self.y, current_room.room.player.x, current_room.room.player.y) > gw then
+      self.x, self.y, current_room.room.coordinator.player.x, current_room.room.coordinator.player.y) > gw then
       print('Sleeping')
       self.passive = true
     else
       self.mana = math.min(self.mana + self.mana_regen * dt, self.max_mana)
-      self.r = angleTowardsCoords(self.x, self.y, current_room.room.player.x, current_room.room.player.y)
+      self.r = angleTowardsCoords(self.x, self.y, current_room.room.coordinator.player.x, current_room.room.coordinator.player.y)
 
       -- Attack randomly
       -- for _, skill in pairs(self.equipped_skills) do

@@ -1,14 +1,22 @@
 { "object":
     {
      "height":16,
-     "id":5,
+     "id":69,
      "name":"door",
+     "properties":
+        {
+         "horizontal":false
+        },
+     "propertytypes":
+        {
+         "horizontal":"bool"
+        },
      "rotation":0,
      "type":"Door",
      "visible":true,
      "width":16,
-     "x":240,
-     "y":160
+     "x":2064,
+     "y":2080
     },
  "type":"template"
 }

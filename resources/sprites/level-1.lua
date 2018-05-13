@@ -8,7 +8,7 @@ return {
   height = 256,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 57,
+  nextobjectid = 76,
   properties = {},
   tilesets = {
     {
@@ -857,7 +857,7 @@ return {
     {
       type = "objectgroup",
       name = "Walls",
-      visible = true,
+      visible = false,
       opacity = 1,
       offsetx = 0,
       offsety = 0,
@@ -1321,8 +1321,108 @@ return {
     },
     {
       type = "objectgroup",
-      name = "Rooms",
+      name = "Doors",
       visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      draworder = "topdown",
+      properties = {},
+      objects = {
+        {
+          id = 69,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2064,
+          y = 2080,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 70,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2064,
+          y = 2176,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["horizontal"] = false
+          }
+        },
+        {
+          id = 71,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2144,
+          y = 2256,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["horizontal"] = true
+          }
+        },
+        {
+          id = 72,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2240,
+          y = 2256,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["horizontal"] = true
+          }
+        },
+        {
+          id = 73,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2176,
+          y = 2032,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["horizontal"] = true
+          }
+        },
+        {
+          id = 75,
+          name = "door",
+          type = "Door",
+          shape = "rectangle",
+          x = 2240,
+          y = 2032,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["horizontal"] = true
+          }
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "Rooms",
+      visible = false,
       opacity = 1,
       offsetx = 0,
       offsety = 0,
