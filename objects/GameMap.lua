@@ -1,8 +1,7 @@
 GameMap = Object:extend()
 
-function GameMap:new(game, coordinator, file_name)
+function GameMap:new(game, file_name)
   self.game = game
-  self.coordinator = coordinator
 
   self.timer = Timer()
 
@@ -12,7 +11,7 @@ function GameMap:new(game, coordinator, file_name)
 
   for k, object in pairs(self.map.objects) do
     if object.type == 'Player' then
-      self.coordinator:spawnPlayer(object.x, object.y)
+      self.game.coordinator:spawnPlayer(object.x, object.y)
     elseif object.type == 'Wall' then
       if object.width == 0 or object.height == 0 then
         self:spawn_thin_wall(object.x, object.y, object.width, object.height)

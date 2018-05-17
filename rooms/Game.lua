@@ -28,6 +28,7 @@ function Game:new(player_class)
   self.cam_player_y_max = love.graphics.getHeight()*0.55
 
   self.coordinator = GameCoordinator(self)
+  self.coordinator:initMap()
 end
 
 function Game:destroy()

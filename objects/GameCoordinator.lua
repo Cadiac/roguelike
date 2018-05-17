@@ -1,6 +1,6 @@
 GameCoordinator = Object:extend()
 
-function GameCoordinator:new(game, player_class)
+function GameCoordinator:new(game)
   self.timer = Timer()
 
   self.game = game
@@ -10,7 +10,7 @@ function GameCoordinator:new(game, player_class)
   self.seed = 1234567800
 
   self.player = nil
-  self.map = GameMap(self.game, self)
+  self.map = nil
 
   self.timer:every(2, function()
     self.game.area:addGameObject('Enemy',
@@ -18,6 +18,10 @@ function GameCoordinator:new(game, player_class)
       self.player.y + fn.sample({-1, 1}) * random(gh/10, gh)
     )
   end)
+end
+
+function GameCoordinator:initMap()
+  self.map = GameMap(self.game)
 end
 
 function GameCoordinator:update(dt)
@@ -32,4 +36,9 @@ function GameCoordinator:spawnPlayer(x, y)
   print('Spawning player at ', x, y)
   self.player = self.game.area:addGameObject(self.game.player_class, x, y)
   camera:lookAt(self.player.x, self.player.y)
+end
+
+function GameCoordinator:spawnEnemy(x, y, type)
+  print('Spawning enemy ', type, ' at ', x, y)
+  self.game.area:addGameObject('Enemy')
 end

@@ -1,8 +1,9 @@
 Area = Object:extend()
 
-function Area:new(room)
-  self.room = room
+function Area:new(game)
+  self.game = game
   self.game_objects = {}
+  self.game_rooms = {}
 end
 
 function Area:update(dt)
@@ -29,6 +30,10 @@ function Area:destroy()
   if self.world then
     self.world:destroy()
     self.world = nil
+  end
+
+  if self.game then
+    self.game = nil
   end
 end
 
@@ -91,4 +96,9 @@ function Area:addLightWorld()
     ambient = {0, 0, 0},
     shadowBlur = 0.0,
   })
+end
+
+function Area:addRoom(room)
+  local room = GameRoom(self.game, room.x, room.y, room.width, room.height)
+  self.game_rooms = fn.append(self.game_rooms, room)
 end

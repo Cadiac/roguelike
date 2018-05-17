@@ -18,6 +18,7 @@ require 'objects/Area'
 require 'objects/Shake'
 require 'objects/GameCoordinator'
 require 'objects/GameMap'
+require 'objects/GameRoom'
 
 -- GameObjects
 require 'objects/game_objects/Circle'
